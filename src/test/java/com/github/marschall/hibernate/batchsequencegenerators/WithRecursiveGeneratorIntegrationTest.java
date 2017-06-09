@@ -29,6 +29,7 @@ import org.springframework.jdbc.datasource.init.DatabasePopulator;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
 
+import com.github.marschall.hibernate.batchsequencegenerators.configurations.H2Configuration;
 import com.github.marschall.hibernate.batchsequencegenerators.configurations.HibernateConfiguration;
 import com.github.marschall.hibernate.batchsequencegenerators.configurations.PostgresConfiguration;
 import com.github.marschall.hibernate.batchsequencegenerators.configurations.TransactionManagerConfiguration;
@@ -57,9 +58,12 @@ public class WithRecursiveGeneratorIntegrationTest {
   @Parameters(name = "{1}")
   public static Collection<Object[]> parameters() {
     return Arrays.asList(
-        new Object[]{PostgresConfiguration.class, "postgres-default"},
-        new Object[]{PostgresConfiguration.class, "postgres-batched"}
-        );
+//            new Object[]{HsqlConfiguration.class, "hsql-default"},
+//            new Object[]{HsqlConfiguration.class, "hsql-batched"},
+            new Object[]{H2Configuration.class, "h2-default"},
+            new Object[]{H2Configuration.class, "h2-batched"},
+            new Object[]{PostgresConfiguration.class, "postgres-default"},
+            new Object[]{PostgresConfiguration.class, "postgres-batched"});
   }
 
   @Before
@@ -105,31 +109,31 @@ public class WithRecursiveGeneratorIntegrationTest {
     EntityManager entityManager = factory.createEntityManager();
     EntityTransaction transaction = entityManager.getTransaction();
     try {
-//      this.template.execute((s) -> {
+      //      this.template.execute((s) -> {
       transaction.begin();
-//        this.populateDatabase();
-        int parentCount = 100;
-        List<ParentEntity> parents = new ArrayList<>(parentCount);
-        for (int i = 0; i < parentCount; i++) {
-          ParentEntity parent = new ParentEntity();
+      //        this.populateDatabase();
+      int parentCount = 100;
+      List<ParentEntity> parents = new ArrayList<>(parentCount);
+      for (int i = 0; i < parentCount; i++) {
+        ParentEntity parent = new ParentEntity();
 
-          parent.addChild(new ChildEntity());
-          parent.addChild(new ChildEntity());
+        parent.addChild(new ChildEntity());
+        parent.addChild(new ChildEntity());
 
-          parents.add(parent);
+        parents.add(parent);
+      }
+      for (ParentEntity parent : parents) {
+        entityManager.persist(parent);
+        for (ChildEntity child : parent.getChildren()) {
+          child.setParentId(parent.getParentId());
+          entityManager.persist(child);
         }
-        for (ParentEntity parent : parents) {
-          entityManager.persist(parent);
-          for (ChildEntity child : parent.getChildren()) {
-            child.setParentId(parent.getParentId());
-            entityManager.persist(child);
-          }
-        }
-//        entityManager.flush();
-//        s.flush();
-//        return null;
-//      });
-        transaction.commit();
+      }
+      //        entityManager.flush();
+      //        s.flush();
+      //        return null;
+      //      });
+      transaction.commit();
     } finally {
       entityManager.close();
     }

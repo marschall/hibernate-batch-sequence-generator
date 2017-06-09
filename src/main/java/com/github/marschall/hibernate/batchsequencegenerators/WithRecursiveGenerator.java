@@ -37,21 +37,16 @@ import org.hibernate.type.Type;
  * <h2>SQL</h2>
  * The generated SELECT will look something like this
  * <pre></code>
+ * WITH RECURSIVE t(n, level_num) AS (
+ *     SELECT nextval(seq_xxx) as n, 1 as level_num
+ *   UNION ALL
+ *     SELECT nextval(seq_xxx) as n, level_num + 1 as level_num
+ *     FROM t
+ *     WHERE level_num &lt; ?)
+ * SELECT n FROM t;
  * </code></pre>
  */
 public class WithRecursiveGenerator implements BulkInsertionCapableIdentifierGenerator, PersistentIdentifierGenerator, Configurable {
-
-  // org.hibernate.id.enhanced.SequenceStyleGenerator
-
-//  WITH /* RECURSIVE */ t(n, level_num) AS (
-//          SELECT nextval(seq_xxx) as n, 1 as level_num
-//          FROM dual
-//        UNION ALL
-//          SELECT nextval(seq_xxx) as n, level_num + 1 as level_num
-//          FROM t
-//          WHERE level_num < ?
-//      )
-//      SELECT n FROM t;
 
   /**
    * Indicates the increment size to use.  The default value is {@link #DEFAULT_FETCH_SIZE}
@@ -97,6 +92,15 @@ public class WithRecursiveGenerator implements BulkInsertionCapableIdentifierGen
   }
 
   private String buildSelect(String sequenceName, Dialect dialect) {
+    if (dialect instanceof org.hibernate.dialect.HSQLDialect) {
+      return "WITH RECURSIVE t(n, level_num) AS ("
+              + "SELECT " + dialect.getSelectSequenceNextValString(sequenceName) + " as n, 1 as level_num "
+              + "UNION "
+              + "SELECT " + dialect.getSelectSequenceNextValString(sequenceName) + " as n, level_num + 1 as level_num "
+              + " FROM t "
+              + " WHERE level_num < ?) "
+              + "SELECT n FROM t";
+    }
     return "WITH RECURSIVE t(n, level_num) AS ("
             + "SELECT " + dialect.getSelectSequenceNextValString(sequenceName) + " as n, 1 as level_num "
             + "UNION ALL "
@@ -126,7 +130,7 @@ public class WithRecursiveGenerator implements BulkInsertionCapableIdentifierGen
   }
 
   @Override
-  public Serializable generate(SharedSessionContractImplementor session, Object object) throws HibernateException {
+  public synchronized Serializable generate(SharedSessionContractImplementor session, Object object) throws HibernateException {
     if (this.identifierPool.isEmpty()) {
       this.identifierPool = this.replenishIdentifierPool(session);
     }
