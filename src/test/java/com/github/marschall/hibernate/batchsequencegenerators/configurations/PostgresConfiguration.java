@@ -26,9 +26,7 @@ public class PostgresConfiguration {
 
   @Bean
   public DatabasePopulator databasePopulator() {
-    return new ResourceDatabasePopulator(
-        new ClassPathResource("postgres-schema.sql"),
-        new ClassPathResource("postgres-data.sql"));
+    return new ResourceDatabasePopulator(new ClassPathResource("postgres-schema.sql"));
   }
 
 }

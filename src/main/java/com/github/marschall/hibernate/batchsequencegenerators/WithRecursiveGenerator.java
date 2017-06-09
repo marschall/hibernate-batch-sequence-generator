@@ -97,10 +97,10 @@ public class WithRecursiveGenerator implements BulkInsertionCapableIdentifierGen
   }
 
   private String buildSelect(String sequenceName, Dialect dialect) {
-    return "WITH t(n, level_num) AS ("
-            + "SELECT " + dialect.getSequenceNextValString(sequenceName) + " as n, 1 as level_num "
+    return "WITH RECURSIVE t(n, level_num) AS ("
+            + "SELECT " + dialect.getSelectSequenceNextValString(sequenceName) + " as n, 1 as level_num "
             + "UNION ALL "
-            + "SELECT " + dialect.getSequenceNextValString(sequenceName) + " as n, level_num + 1 as level_num "
+            + "SELECT " + dialect.getSelectSequenceNextValString(sequenceName) + " as n, level_num + 1 as level_num "
             + " FROM t "
             + " WHERE level_num < ?) "
             + "SELECT n FROM t";
@@ -122,7 +122,7 @@ public class WithRecursiveGenerator implements BulkInsertionCapableIdentifierGen
 
   @Override
   public String determineBulkInsertionIdentifierGenerationSelectFragment(Dialect dialect) {
-    return dialect.getSequenceNextValString(this.sequenceName);
+    return dialect.getSelectSequenceNextValString(this.sequenceName);
   }
 
   @Override
@@ -193,7 +193,7 @@ public class WithRecursiveGenerator implements BulkInsertionCapableIdentifierGen
     }
 
     boolean isEmpty() {
-      return this.iterator.hasNext();
+      return !this.iterator.hasNext();
     }
 
     Serializable next() {
@@ -267,6 +267,12 @@ public class WithRecursiveGenerator implements BulkInsertionCapableIdentifierGen
       throw new IdentifierGenerationException("unsupported integral type: " + integralType);
     }
 
+  }
+
+  @Override
+  public String toString() {
+    // for debugging only
+    return this.getClass().getSimpleName() + '(' + this.sequenceName + ')';
   }
 
 }

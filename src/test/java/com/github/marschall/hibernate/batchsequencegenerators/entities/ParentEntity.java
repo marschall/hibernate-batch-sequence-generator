@@ -10,6 +10,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
@@ -30,7 +32,8 @@ public class ParentEntity {
   private Long parentId;
 
   @OneToMany
-  @JoinColumn(name = "PART_ID")
+  @JoinColumn(name = "PARENT_ID")
+//  @Cascade({CascadeType.PERSIST})
   private Set<ChildEntity> children = new HashSet<>();
 
   public Long getParentId() {

@@ -4,10 +4,15 @@ import static java.util.Collections.singletonMap;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
 import javax.sql.DataSource;
 
 import org.junit.After;
@@ -27,6 +32,8 @@ import org.springframework.transaction.support.TransactionTemplate;
 import com.github.marschall.hibernate.batchsequencegenerators.configurations.HibernateConfiguration;
 import com.github.marschall.hibernate.batchsequencegenerators.configurations.PostgresConfiguration;
 import com.github.marschall.hibernate.batchsequencegenerators.configurations.TransactionManagerConfiguration;
+import com.github.marschall.hibernate.batchsequencegenerators.entities.ChildEntity;
+import com.github.marschall.hibernate.batchsequencegenerators.entities.ParentEntity;
 
 @RunWith(Parameterized.class)
 public class WithRecursiveGeneratorIntegrationTest {
@@ -49,8 +56,11 @@ public class WithRecursiveGeneratorIntegrationTest {
 
   @Parameters(name = "{1}")
   public static Collection<Object[]> parameters() {
-    return Arrays.asList(
-        new Object[]{PostgresConfiguration.class, "postgres-default"},
+//    return Arrays.asList(
+//        new Object[]{PostgresConfiguration.class, "postgres-default"},
+//        new Object[]{PostgresConfiguration.class, "postgres-default"}
+//        );
+    return Collections.singletonList(
         new Object[]{PostgresConfiguration.class, "postgres-default"}
         );
   }
@@ -67,19 +77,24 @@ public class WithRecursiveGeneratorIntegrationTest {
 
     PlatformTransactionManager txManager = this.applicationContext.getBean(PlatformTransactionManager.class);
     this.template = new TransactionTemplate(txManager);
+    this.template.setPropagationBehavior(0);
 
     this.template.execute(status -> {
-      Map<String, DatabasePopulator> beans = this.applicationContext.getBeansOfType(DatabasePopulator.class);
-      DataSource dataSource = this.applicationContext.getBean(DataSource.class);
-      try (Connection connection = dataSource.getConnection()) {
-        for (DatabasePopulator populator : beans.values()) {
-          populator.populate(connection);
-        }
-      } catch (SQLException e) {
-        throw new RuntimeException("could initialize database", e);
-      }
-      return null;
+      return populateDatabase();
     });
+  }
+
+  private Object populateDatabase() {
+    Map<String, DatabasePopulator> beans = this.applicationContext.getBeansOfType(DatabasePopulator.class);
+    DataSource dataSource = this.applicationContext.getBean(DataSource.class);
+    try (Connection connection = dataSource.getConnection()) {
+      for (DatabasePopulator populator : beans.values()) {
+        populator.populate(connection);
+      }
+    } catch (SQLException e) {
+      throw new RuntimeException("could initialize database", e);
+    }
+    return null;
   }
 
   @After
@@ -89,26 +104,38 @@ public class WithRecursiveGeneratorIntegrationTest {
 
   @Test
   public void insert() {
-
-//    EntityManagerFactory factory = this.applicationContext.getBean(EntityManagerFactory.class);
-//    EntityManager entityManager = factory.createEntityManager();
-//    try {
+    EntityManagerFactory factory = this.applicationContext.getBean(EntityManagerFactory.class);
+    EntityManager entityManager = factory.createEntityManager();
+    EntityTransaction transaction = entityManager.getTransaction();
+    try {
 //      this.template.execute((s) -> {
-//        int parentCount = 100;
-//        List<ParentEntity> parents = new ArrayList<>(parentCount);
-//        for (int i = 0; i < parentCount; i++) {
-//          ParentEntity parent = new ParentEntity();
-//          parent.addChild(new ChildEntity());
-//          parent.addChild(new ChildEntity());
-//        }
-//        for (ParentEntity parent : parents) {
-//          entityManager.persist(parent);
-//        }
+      transaction.begin();
+//        this.populateDatabase();
+        int parentCount = 100;
+        List<ParentEntity> parents = new ArrayList<>(parentCount);
+        for (int i = 0; i < parentCount; i++) {
+          ParentEntity parent = new ParentEntity();
+
+          parent.addChild(new ChildEntity());
+          parent.addChild(new ChildEntity());
+
+          parents.add(parent);
+        }
+        for (ParentEntity parent : parents) {
+          entityManager.persist(parent);
+          for (ChildEntity child : parent.getChildren()) {
+            child.setParentId(parent.getParentId());
+            entityManager.persist(child);
+          }
+        }
+//        entityManager.flush();
+//        s.flush();
 //        return null;
 //      });
-//    } finally {
-//      entityManager.close();
-//    }
+        transaction.commit();
+    } finally {
+      entityManager.close();
+    }
   }
 
 }

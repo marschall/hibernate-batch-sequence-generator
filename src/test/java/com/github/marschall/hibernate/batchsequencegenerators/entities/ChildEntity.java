@@ -23,8 +23,8 @@ public class ChildEntity {
   @Column(name = "CHILD_ID")
   private Long childId;
 
-//  @Column(name = "PARENT_ID")
-//  private Long parentId;
+  @Column(name = "PARENT_ID")
+  private Long parentId;
 
   public Long getChildId() {
     return childId;
@@ -34,12 +34,12 @@ public class ChildEntity {
     this.childId = childId;
   }
 
-//  public Long getParentId() {
-//    return parentId;
-//  }
-//
-//  public void setParentId(Long parentId) {
-//    this.parentId = parentId;
-//  }
+  public Long getParentId() {
+    return parentId;
+  }
+
+  public void setParentId(Long parentId) {
+    this.parentId = parentId;
+  }
 
 }

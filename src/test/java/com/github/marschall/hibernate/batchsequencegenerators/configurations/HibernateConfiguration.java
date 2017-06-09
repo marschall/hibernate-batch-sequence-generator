@@ -19,9 +19,12 @@ public class HibernateConfiguration {
   @Autowired
   private Environment environment;
 
+  @Autowired
+  private DataSource dataSource;
+
 
   @Bean
-  public LocalContainerEntityManagerFactoryBean entityManager(DataSource dataSource) {
+  public LocalContainerEntityManagerFactoryBean entityManager() {
     LocalContainerEntityManagerFactoryBean bean = new LocalContainerEntityManagerFactoryBean();
     bean.setPersistenceUnitName(environment.getProperty(PERSISTENCE_UNIT_NAME));
     bean.setJpaDialect(jpaDialect());
@@ -29,7 +32,6 @@ public class HibernateConfiguration {
     bean.setDataSource(dataSource);
     return bean;
   }
-
 
   @Bean
   public JpaDialect jpaDialect() {

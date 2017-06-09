@@ -2,12 +2,15 @@
 <Configuration status="WARN">
   <Appenders>
     <Console name="Console" target="SYSTEM_OUT">
-      <PatternLayout pattern="%d{HH:mm:ss} %-5level %logger{36} - %msg%n"/>
+      <PatternLayout pattern="%d{HH:mm:ss} %-5level %logger{36} - %msg%n" />
     </Console>
   </Appenders>
   <Loggers>
     <Root level="WARN">
-      <AppenderRef ref="Console"/>
+      <AppenderRef ref="Console" />
     </Root>
+    <Logger name="org.hibernate.SQL" level="DEBUG">
+      <AppenderRef ref="Console" />
+    </Logger>
   </Loggers>
 </Configuration>
