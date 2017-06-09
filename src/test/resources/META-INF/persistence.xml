@@ -96,14 +96,19 @@
     </properties>
   </persistence-unit>
 
-  <persistence-unit name="mysql-default">
+  <persistence-unit name="sqlserver-batched">
     <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
     <class>com.github.marschall.hibernate.batchsequencegenerators.entities.ParentEntity</class>
     <class>com.github.marschall.hibernate.batchsequencegenerators.entities.ChildEntity</class>
 
     <properties>
-      <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL57Dialect" />
+      <property name="hibernate.dialect" value="org.hibernate.dialect.SQLServer2012Dialect" />
+      <!-- https://vladmihalcea.com/2015/03/18/how-to-batch-insert-and-update-statements-with-hibernate/ -->
+      <property name="hibernate.jdbc.batch_size" value="50" />
+      <property name="hibernate.order_inserts" value="true" />
+      <property name="hibernate.order_updates" value="true" />
+      <property name="hibernate.jdbc.batch_versioned_data" value="true" />
     </properties>
   </persistence-unit>
 
