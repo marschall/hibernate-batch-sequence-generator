@@ -17,11 +17,16 @@ import org.hibernate.service.ServiceRegistry;
 import org.hibernate.type.Type;
 import org.jboss.logging.Logger;
 
+/**
+ * A sequence generator that uses Oracle CONNECT BY syntax
+ * to fetch multiple values from a sequence.
+ * <p>
+ * Oracle does not support using recursive common table expressions in
+ * order to fetch multiple values from a sequence.
+ */
 public class ConnectByGenerator implements BulkInsertionCapableIdentifierGenerator, Configurable {
 
 //  SELECT seq_xxx.nextval FROM dual CONNECT BY rownum <= 5;/
-
-  private static final Logger LOG = Logger.getLogger(MethodHandles.publicLookup().lookupClass());
 
   /**
    * The sequence parameter
