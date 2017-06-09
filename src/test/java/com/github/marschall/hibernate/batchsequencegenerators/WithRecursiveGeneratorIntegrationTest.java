@@ -5,8 +5,8 @@ import static java.util.Collections.singletonMap;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -56,12 +56,9 @@ public class WithRecursiveGeneratorIntegrationTest {
 
   @Parameters(name = "{1}")
   public static Collection<Object[]> parameters() {
-//    return Arrays.asList(
-//        new Object[]{PostgresConfiguration.class, "postgres-default"},
-//        new Object[]{PostgresConfiguration.class, "postgres-default"}
-//        );
-    return Collections.singletonList(
-        new Object[]{PostgresConfiguration.class, "postgres-default"}
+    return Arrays.asList(
+        new Object[]{PostgresConfiguration.class, "postgres-default"},
+        new Object[]{PostgresConfiguration.class, "postgres-batched"}
         );
   }
 
