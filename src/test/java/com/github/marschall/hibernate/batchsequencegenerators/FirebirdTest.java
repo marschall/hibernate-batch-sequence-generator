@@ -9,6 +9,7 @@ import javax.sql.DataSource;
 import javax.transaction.Transactional;
 
 import org.junit.ClassRule;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,7 @@ import com.github.marschall.hibernate.batchsequencegenerators.configurations.Fir
 
 @Transactional
 @ContextConfiguration(classes = {FirebirdConfiguration.class, LocalTransactionManagerConfiguration.class})
+@Ignore
 public class FirebirdTest {
 
   @ClassRule
