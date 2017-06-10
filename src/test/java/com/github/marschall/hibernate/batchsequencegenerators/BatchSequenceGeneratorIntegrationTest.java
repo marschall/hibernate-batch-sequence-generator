@@ -29,6 +29,7 @@ import org.springframework.jdbc.datasource.init.DatabasePopulator;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
 
+import com.github.marschall.hibernate.batchsequencegenerators.configurations.FirebirdConfiguration;
 import com.github.marschall.hibernate.batchsequencegenerators.configurations.H2Configuration;
 import com.github.marschall.hibernate.batchsequencegenerators.configurations.HibernateConfiguration;
 import com.github.marschall.hibernate.batchsequencegenerators.configurations.HsqlConfiguration;
@@ -53,14 +54,16 @@ public class BatchSequenceGeneratorIntegrationTest {
   @Parameters(name = "{1}")
   public static Collection<Object[]> parameters() {
     return Arrays.asList(
-            new Object[]{HsqlConfiguration.class, "hsql-default"},
-            new Object[]{HsqlConfiguration.class, "hsql-batched"},
-            new Object[]{H2Configuration.class, "h2-default"},
-            new Object[]{H2Configuration.class, "h2-batched"},
-            new Object[]{H2Configuration.class, "sqlserver-default"},
-            new Object[]{H2Configuration.class, "sqlserver-batched"},
-            new Object[]{PostgresConfiguration.class, "postgres-default"},
-            new Object[]{PostgresConfiguration.class, "postgres-batched"});
+            new Object[]{FirebirdConfiguration.class, "firebird-default"},
+            new Object[]{FirebirdConfiguration.class, "firebird-batched"});
+//            new Object[]{HsqlConfiguration.class, "hsql-default"},
+//            new Object[]{HsqlConfiguration.class, "hsql-batched"},
+//            new Object[]{H2Configuration.class, "h2-default"},
+//            new Object[]{H2Configuration.class, "h2-batched"},
+//            new Object[]{H2Configuration.class, "sqlserver-default"},
+//            new Object[]{H2Configuration.class, "sqlserver-batched"},
+//            new Object[]{PostgresConfiguration.class, "postgres-default"},
+//            new Object[]{PostgresConfiguration.class, "postgres-batched"});
   }
 
   @Before

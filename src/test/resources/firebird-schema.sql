@@ -1,0 +1,30 @@
+-- EXECUTE BLOCK AS BEGIN
+-- if (exists(select 1 from RDB$GENERATORS where RDB$GENERATOR_NAME = 'SEQ_CHILD_ID')) then
+-- execute statement 'SEQ_CHILD_ID;';
+-- END;
+-- 
+-- if (exists(select 1 from RDB$GENERATORS where RDB$GENERATOR_NAME = 'SEQ_CHILD_ID')) then
+-- execute statement 'SEQ_PARENT_ID;';
+-- 
+-- if (not exists(select 1 from rdb$relations where rdb$relation_name = 'CHILD_ENTITY')) then
+-- execute statement 'DROP TABLE CHILD_ENTITY;';
+-- 
+-- if (not exists(select 1 from rdb$relations where rdb$relation_name = 'PARENT_ENTITY')) then
+-- execute statement 'DROP TABLE PARENT_ENTITY;';
+
+-- CREATE TABLE PARENT_ENTITY (
+--   PARENT_ID BIGINT NOT NULL,
+--   PRIMARY KEY (PARENT_ID)
+-- );
+-- 
+-- CREATE TABLE CHILD_ENTITY (
+--   CHILD_ID BIGINT NOT NULL,
+--   PARENT_ID BIGINT NOT NULL,
+--   PRIMARY KEY (CHILD_ID),
+--   FOREIGN KEY (PARENT_ID) REFERENCES PARENT_ENTITY (PARENT_ID)
+-- );
+-- 
+-- CREATE SEQUENCE SEQ_PARENT_ID;
+-- 
+-- CREATE SEQUENCE SEQ_CHILD_ID;
+

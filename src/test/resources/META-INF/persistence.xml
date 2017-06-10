@@ -107,6 +107,32 @@
     </properties>
   </persistence-unit>
 
+  <persistence-unit name="firebird-default">
+    <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+
+    <class>com.github.marschall.hibernate.batchsequencegenerators.entities.ParentEntity</class>
+    <class>com.github.marschall.hibernate.batchsequencegenerators.entities.ChildEntity</class>
+
+    <properties>
+      <property name="hibernate.dialect" value="org.hibernate.dialect.FirebirdDialect" />
+    </properties>
+  </persistence-unit>
+
+  <persistence-unit name="firebird-batched">
+    <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+
+    <class>com.github.marschall.hibernate.batchsequencegenerators.entities.ParentEntity</class>
+    <class>com.github.marschall.hibernate.batchsequencegenerators.entities.ChildEntity</class>
+
+    <properties>
+      <property name="hibernate.dialect" value="org.hibernate.dialect.FirebirdDialect" />
+      <property name="hibernate.jdbc.batch_size" value="50" />
+      <property name="hibernate.order_inserts" value="true" />
+      <property name="hibernate.order_updates" value="true" />
+      <property name="hibernate.jdbc.batch_versioned_data" value="true" />
+    </properties>
+  </persistence-unit>
+
   <persistence-unit name="oracle-default">
     <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
@@ -115,6 +141,21 @@
 
     <properties>
       <property name="hibernate.dialect" value="org.hibernate.dialect.Oracle12cDialect" />
+    </properties>
+  </persistence-unit>
+
+  <persistence-unit name="oracle-batched">
+    <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+
+    <class>com.github.marschall.hibernate.batchsequencegenerators.entities.ParentEntity</class>
+    <class>com.github.marschall.hibernate.batchsequencegenerators.entities.ChildEntity</class>
+
+    <properties>
+      <property name="hibernate.dialect" value="org.hibernate.dialect.Oracle12cDialect" />
+      <property name="hibernate.jdbc.batch_size" value="50" />
+      <property name="hibernate.order_inserts" value="true" />
+      <property name="hibernate.order_updates" value="true" />
+      <property name="hibernate.jdbc.batch_versioned_data" value="true" />
     </properties>
   </persistence-unit>
 

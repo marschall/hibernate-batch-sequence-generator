@@ -64,6 +64,7 @@ import org.hibernate.type.Type;
  * <h2>Database Support</h2>
  * The following RDBMS have been verified to work
  * <ul>
+ *  <li>Firebird</li>
  *  <li>Oracle</li>
  *  <li>H2</li>
  *  <li>HSQLDB</li>
@@ -120,6 +121,16 @@ public class BatchSequenceGenerator implements BulkInsertionCapableIdentifierGen
     }
     if (dialect instanceof org.hibernate.dialect.HSQLDialect) {
       return "SELECT " + dialect.getSelectSequenceNextValString(sequenceName) + " FROM UNNEST(SEQUENCE_ARRAY(1, ?, 1))";
+    }
+    if (dialect instanceof org.hibernate.dialect.FirebirdDialect) {
+      return "WITH RECURSIVE t(n, level_num) AS ("
+              + "SELECT " + dialect.getSelectSequenceNextValString(sequenceName) + " as n, 1 as level_num "
+              + " FROM rdb$database "
+              + "UNION ALL "
+              + "SELECT " + dialect.getSelectSequenceNextValString(sequenceName) + " as n, level_num + 1 as level_num "
+              + " FROM t "
+              + " WHERE level_num < ?) "
+              + "SELECT n FROM t";
     }
     return "WITH RECURSIVE t(n, level_num) AS ("
             + "SELECT " + dialect.getSelectSequenceNextValString(sequenceName) + " as n, 1 as level_num "
