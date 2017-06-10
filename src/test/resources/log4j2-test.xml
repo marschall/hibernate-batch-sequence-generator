@@ -9,7 +9,7 @@
     <Root level="WARN">
       <AppenderRef ref="Console" />
     </Root>
-    <Logger name="org.hibernate.SQL" level="DEBUG">
+    <Logger name="net.ttddyy.dsproxy.listener.logging.SLF4JQueryLoggingListener" level="DEBUG">
       <AppenderRef ref="Console" />
     </Logger>
   </Loggers>

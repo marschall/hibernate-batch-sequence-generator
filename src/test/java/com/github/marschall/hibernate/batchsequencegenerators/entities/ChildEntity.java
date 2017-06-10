@@ -15,12 +15,12 @@ import org.hibernate.annotations.Parameter;
 public class ChildEntity {
 
   @Id
-  @GenericGenerator(name = "with-recursive", strategy = "com.github.marschall.hibernate.batchsequencegenerators.WithRecursiveGenerator",
+  @GenericGenerator(name = "child_id_generator", strategy = "com.github.marschall.hibernate.batchsequencegenerators.WithRecursiveGenerator",
           parameters = {
               @Parameter(name = SEQUENCE_PARAM, value = "seq_child_id"),
               @Parameter(name = FETCH_SIZE_PARAM, value = "50")
           })
-  @GeneratedValue(generator = "with-recursive")
+  @GeneratedValue(generator = "child_id_generator")
   @Column(name = "CHILD_ID")
   private Long childId;
 

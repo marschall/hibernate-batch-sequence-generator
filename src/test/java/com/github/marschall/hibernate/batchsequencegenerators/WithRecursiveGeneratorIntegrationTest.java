@@ -101,7 +101,7 @@ public class WithRecursiveGeneratorIntegrationTest {
   }
 
   @Test
-  public void insert() {
+  public void parentChildInstert() {
     EntityManagerFactory factory = this.applicationContext.getBean(EntityManagerFactory.class);
     EntityManager entityManager = factory.createEntityManager();
     EntityTransaction transaction = entityManager.getTransaction();
@@ -125,6 +125,34 @@ public class WithRecursiveGeneratorIntegrationTest {
           child.setParentId(parent.getParentId());
           entityManager.persist(child);
         }
+      }
+      //        entityManager.flush();
+      //        s.flush();
+      //        return null;
+      //      });
+      transaction.commit();
+    } finally {
+      entityManager.close();
+    }
+  }
+
+  @Test
+  public void parentInstert() {
+    EntityManagerFactory factory = this.applicationContext.getBean(EntityManagerFactory.class);
+    EntityManager entityManager = factory.createEntityManager();
+    EntityTransaction transaction = entityManager.getTransaction();
+    try {
+      //      this.template.execute((s) -> {
+      transaction.begin();
+      //        this.populateDatabase();
+      int parentCount = 50;
+      List<ParentEntity> parents = new ArrayList<>(parentCount);
+      for (int i = 0; i < parentCount; i++) {
+        ParentEntity parent = new ParentEntity();
+        parents.add(parent);
+      }
+      for (ParentEntity parent : parents) {
+        entityManager.persist(parent);
       }
       //        entityManager.flush();
       //        s.flush();
