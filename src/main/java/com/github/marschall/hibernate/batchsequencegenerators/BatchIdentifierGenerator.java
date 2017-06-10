@@ -11,6 +11,8 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.hibernate.HibernateException;
 import org.hibernate.MappingException;
@@ -33,46 +35,42 @@ import org.hibernate.type.Type;
 public abstract class BatchIdentifierGenerator implements BulkInsertionCapableIdentifierGenerator, PersistentIdentifierGenerator, Configurable {
 
   /**
-   * Indicates the increment size to use.  The default value is {@link #DEFAULT_FETCH_SIZE}
+   * Indicates the name of the sequence to use, mandatory.
+   */
+  public static final String SEQUENCE_PARAM = "sequence";
+
+  /**
+   * Indicates how many sequence values to fetch at once. The default value is {@link #DEFAULT_FETCH_SIZE}.
    */
   public static final String FETCH_SIZE_PARAM = "fetch_size";
 
   /**
-   * The default value for {@link #FETCH_SIZE_PARAM}
+   * The default value for {@link #FETCH_SIZE_PARAM}.
    */
   public static final int DEFAULT_FETCH_SIZE = 10;
 
-  /**
-   * The sequence parameter
-   */
-  public static final String SEQUENCE = "sequence";
+  private final Lock lock = new ReentrantLock();
 
-  private String sequenceName;
   private String select;
   private int fetchSize;
   private IdentifierPool identifierPool;
   private IdentifierExtractor identifierExtractor;
-
   private DatabaseStructure databaseStructure;
 
   @Override
   public void configure(Type type, Properties params, ServiceRegistry serviceRegistry)
           throws MappingException {
+
     JdbcEnvironment jdbcEnvironment = serviceRegistry.getService(JdbcEnvironment.class);
     Dialect dialect = jdbcEnvironment.getDialect();
-    this.sequenceName = params.getProperty(SEQUENCE);
-    if (this.sequenceName == null) {
-      throw new MappingException("no squence name specified");
-    }
-    this.select = this.buildSelect(this.sequenceName, dialect);
-    this.identifierExtractor = IdentifierExtractor.getIdentifierExtractor(type.getReturnedClass());
+    String sequenceName = determineSequenceName(params);
     this.fetchSize = determineFetchSize(params);
-    if (this.fetchSize <= 0) {
-      throw new MappingException("fetch size must be positive");
-    }
+
+    this.select = this.buildSelect(sequenceName, dialect);
+    this.identifierExtractor = IdentifierExtractor.getIdentifierExtractor(type.getReturnedClass());
     this.identifierPool = IdentifierPool.empty();
 
-    this.databaseStructure = buildDatabaseStructure(type, this.sequenceName, jdbcEnvironment);
+    this.databaseStructure = buildDatabaseStructure(type, sequenceName, jdbcEnvironment);
   }
 
   abstract String buildSelect(String sequenceName, Dialect dialect);
@@ -82,8 +80,20 @@ public abstract class BatchIdentifierGenerator implements BulkInsertionCapableId
             QualifiedNameParser.INSTANCE.parse(sequenceName), 1, 1, type.getReturnedClass());
   }
 
-  private int determineFetchSize(Properties params) {
-    return ConfigurationHelper.getInt(FETCH_SIZE_PARAM, params, DEFAULT_FETCH_SIZE);
+  private  static String determineSequenceName(Properties params) {
+    String sequenceName = params.getProperty(SEQUENCE_PARAM);
+    if (sequenceName == null) {
+      throw new MappingException("no squence name specified");
+    }
+    return sequenceName;
+  }
+
+  private static int determineFetchSize(Properties params) {
+    int fetchSize = ConfigurationHelper.getInt(FETCH_SIZE_PARAM, params, DEFAULT_FETCH_SIZE);
+    if (fetchSize <= 0) {
+      throw new MappingException("fetch size must be positive");
+    }
+    return fetchSize;
   }
 
   @Override
@@ -93,32 +103,41 @@ public abstract class BatchIdentifierGenerator implements BulkInsertionCapableId
 
   @Override
   public String determineBulkInsertionIdentifierGenerationSelectFragment(Dialect dialect) {
-    return dialect.getSelectSequenceNextValString(this.sequenceName);
+    return dialect.getSelectSequenceNextValString(getSequenceName());
   }
 
   @Override
-  public synchronized Serializable generate(SharedSessionContractImplementor session, Object object) throws HibernateException {
-    if (this.identifierPool.isEmpty()) {
-      this.identifierPool = this.replenishIdentifierPool(session);
+  public Serializable generate(SharedSessionContractImplementor session, Object object) throws HibernateException {
+    this.lock.lock();
+    try {
+      if (this.identifierPool.isEmpty()) {
+        this.identifierPool = this.replenishIdentifierPool(session);
+      }
+      return this.identifierPool.next();
+    } finally {
+      this.lock.unlock();
     }
-    return this.identifierPool.next();
   }
 
   @Override
   public Object generatorKey() {
-    return this.sequenceName;
+    return getSequenceName();
+  }
+
+  private String getSequenceName() {
+    return this.databaseStructure.getName();
   }
 
   @Override
   @Deprecated
-  public String[] sqlCreateStrings(Dialect dialect) throws HibernateException {
-    return dialect.getCreateSequenceStrings(this.sequenceName, 1, 1);
+  public String[] sqlCreateStrings(Dialect dialect) {
+    return this.databaseStructure.sqlCreateStrings(dialect);
   }
 
   @Override
   @Deprecated
-  public String[] sqlDropStrings(Dialect dialect) throws HibernateException {
-    return dialect.getDropSequenceStrings(this.sequenceName);
+  public String[] sqlDropStrings(Dialect dialect) {
+    return this.databaseStructure.sqlDropStrings(dialect);
   }
 
   @Override
@@ -126,7 +145,8 @@ public abstract class BatchIdentifierGenerator implements BulkInsertionCapableId
     this.databaseStructure.registerExportables(database);
   }
 
-  private IdentifierPool replenishIdentifierPool(SharedSessionContractImplementor session) throws HibernateException {
+  private IdentifierPool replenishIdentifierPool(SharedSessionContractImplementor session)
+          throws HibernateException {
     JdbcCoordinator coordinator = session.getJdbcCoordinator();
     List<Serializable> identifiers = new ArrayList<>(this.fetchSize);
     try (PreparedStatement statement = coordinator.getStatementPreparer().prepareStatement(this.select)) {
@@ -138,15 +158,19 @@ public abstract class BatchIdentifierGenerator implements BulkInsertionCapableId
         }
       }
     } catch (SQLException e) {
-      throw session.getJdbcServices().getSqlExceptionHelper().convert(e, "could not get next sequence value", this.select);
+      throw session.getJdbcServices().getSqlExceptionHelper().convert(
+              e, "could not get next sequence value", this.select);
     }
     if (identifiers.size() != this.fetchSize) {
-      throw new IdentifierGenerationException("expected " + this.fetchSize + " values from " + this.sequenceName
+      throw new IdentifierGenerationException("expected " + this.fetchSize + " values from " + this.getSequenceName()
               + " but got " + identifiers.size());
     }
     return IdentifierPool.forList(identifiers);
   }
 
+  /**
+   * Holds a number of prefetched identifiers.
+   */
   static final class IdentifierPool {
 
     private final Iterator<Serializable> iterator;
@@ -173,8 +197,12 @@ public abstract class BatchIdentifierGenerator implements BulkInsertionCapableId
 
   }
 
+  /**
+   * Extracts a {@link Serializable} identifier from a {@link ResultSet}.
+   *
+   * @see org.hibernate.id.IntegralDataTypeHolder
+   */
   enum IdentifierExtractor {
-    // org.hibernate.id.IntegralDataTypeHolder
 
     INTEGER_IDENTIFIER_EXTRACTOR {
       @Override
@@ -243,7 +271,7 @@ public abstract class BatchIdentifierGenerator implements BulkInsertionCapableId
   @Override
   public String toString() {
     // for debugging only
-    return this.getClass().getSimpleName() + '(' + this.sequenceName + ')';
+    return this.getClass().getSimpleName() + '(' + this.getSequenceName() + ')';
   }
 
 }

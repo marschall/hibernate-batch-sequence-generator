@@ -31,6 +31,7 @@ import org.springframework.transaction.support.TransactionTemplate;
 
 import com.github.marschall.hibernate.batchsequencegenerators.configurations.H2Configuration;
 import com.github.marschall.hibernate.batchsequencegenerators.configurations.HibernateConfiguration;
+import com.github.marschall.hibernate.batchsequencegenerators.configurations.HsqlConfiguration;
 import com.github.marschall.hibernate.batchsequencegenerators.configurations.PostgresConfiguration;
 import com.github.marschall.hibernate.batchsequencegenerators.configurations.TransactionManagerConfiguration;
 import com.github.marschall.hibernate.batchsequencegenerators.entities.ChildEntity;
@@ -38,12 +39,6 @@ import com.github.marschall.hibernate.batchsequencegenerators.entities.ParentEnt
 
 @RunWith(Parameterized.class)
 public class WithRecursiveGeneratorIntegrationTest {
-
-  // https://docs.jboss.org/hibernate/orm/5.0/manual/en-US/html/ch03.html#configuration-optional-properties
-  // https://vladmihalcea.com/2014/07/08/hibernate-identity-sequence-and-table-sequence-generator/
-  // hibernate.order_inserts
-  // hibernate.order_updates
-  // hibernate.jdbc.batch_size
 
   private final Class<?> databaseConfiguration;
   private final String persistenceUnitName;
@@ -58,8 +53,8 @@ public class WithRecursiveGeneratorIntegrationTest {
   @Parameters(name = "{1}")
   public static Collection<Object[]> parameters() {
     return Arrays.asList(
-//            new Object[]{HsqlConfiguration.class, "hsql-default"},
-//            new Object[]{HsqlConfiguration.class, "hsql-batched"},
+            new Object[]{HsqlConfiguration.class, "hsql-default"},
+            new Object[]{HsqlConfiguration.class, "hsql-batched"},
             new Object[]{H2Configuration.class, "h2-default"},
             new Object[]{H2Configuration.class, "h2-batched"},
             new Object[]{H2Configuration.class, "sqlserver-default"},

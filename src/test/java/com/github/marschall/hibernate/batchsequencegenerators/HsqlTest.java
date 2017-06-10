@@ -41,6 +41,9 @@ public class HsqlTest {
           + "UNION ALL "
           +"SELECT next value for seq_parent_id as n, level_num + 1 as level_num  FROM t  WHERE level_num < 10) "
           + "SELECT n FROM t";
+
+  private static final String H =
+          "SELECT next value for seq_parent_id FROM UNNEST(SEQUENCE_ARRAY(1, 10, 1))";
 //
 //  private static final String S = "WITH RECURSIVE t(n, level_num) AS ("
 //          + "SELECT next value for seq_parent_id as n, 1 as level_num "
@@ -53,6 +56,19 @@ public class HsqlTest {
     try (Connection connection = this.dataSource.getConnection();
          Statement statement = connection.createStatement()) {
       try (ResultSet resultSet = statement.executeQuery(S)) {
+//      try (ResultSet resultSet = statement.executeQuery("SELECT next value for seq_parent_id as n, 1 as level_num  FROM (VALUES(0))")) {
+        while (resultSet.next()) {
+          System.out.println(resultSet.getLong(1));
+        }
+      }
+    }
+  }
+
+  @Test
+  public void hax() throws SQLException {
+    try (Connection connection = this.dataSource.getConnection();
+            Statement statement = connection.createStatement()) {
+      try (ResultSet resultSet = statement.executeQuery(H)) {
 //      try (ResultSet resultSet = statement.executeQuery("SELECT next value for seq_parent_id as n, 1 as level_num  FROM (VALUES(0))")) {
         while (resultSet.next()) {
           System.out.println(resultSet.getLong(1));

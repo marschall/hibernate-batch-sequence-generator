@@ -1,5 +1,8 @@
 package com.github.marschall.hibernate.batchsequencegenerators.entities;
 
+import static com.github.marschall.hibernate.batchsequencegenerators.BatchIdentifierGenerator.FETCH_SIZE_PARAM;
+import static com.github.marschall.hibernate.batchsequencegenerators.BatchIdentifierGenerator.SEQUENCE_PARAM;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -10,22 +13,17 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
-
-import com.github.marschall.hibernate.batchsequencegenerators.WithRecursiveGenerator;
 
 @Entity(name = "PARENT_ENTITY")
 public class ParentEntity {
 
-  // https://stackoverflow.com/questions/31158509/how-to-generate-custom-id-using-hibernate-while-it-must-be-primary-key-of-table
   @Id
   @GenericGenerator(name = "with-recursive", strategy = "com.github.marschall.hibernate.batchsequencegenerators.WithRecursiveGenerator",
           parameters = {
-              @Parameter(name = WithRecursiveGenerator.SEQUENCE, value = "seq_parent_id"),
-              @Parameter(name = WithRecursiveGenerator.FETCH_SIZE_PARAM, value = "50")
+              @Parameter(name = SEQUENCE_PARAM, value = "seq_parent_id"),
+              @Parameter(name = FETCH_SIZE_PARAM, value = "50")
           })
   @GeneratedValue(generator = "with-recursive")
   @Column(name = "PARENT_ID")
