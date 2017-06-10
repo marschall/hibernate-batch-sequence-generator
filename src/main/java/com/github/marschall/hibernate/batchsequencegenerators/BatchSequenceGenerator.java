@@ -32,7 +32,48 @@ import org.hibernate.internal.util.config.ConfigurationHelper;
 import org.hibernate.service.ServiceRegistry;
 import org.hibernate.type.Type;
 
-public abstract class BatchIdentifierGenerator implements BulkInsertionCapableIdentifierGenerator, PersistentIdentifierGenerator, Configurable {
+/**
+ * A sequence generator that uses a recursive query to fetch multiple
+ * values from a sequence in a single database access.
+ *
+ * <h2>SQL</h2>
+ * The generated SELECT will look something like this
+ * <pre></code>
+ * WITH RECURSIVE t(n, level_num) AS (
+ *     SELECT nextval(seq_xxx) as n, 1 as level_num
+ *   UNION ALL
+ *     SELECT nextval(seq_xxx) as n, level_num + 1 as level_num
+ *     FROM t
+ *     WHERE level_num &lt; ?)
+ * SELECT n FROM t;
+ * </code></pre>
+ * for HSQLDB the generated SELECT will look something like this
+ * <pre></code>
+ * SELECT next value for seq_parent_id
+ * FROM UNNEST(SEQUENCE_ARRAY(1, ?, 1));
+ * </code></pre>
+ * for Oracle the generated SELECT will look something like this
+ * because Oracle does not support using recursive common table
+ * expressions in to fetch multiple values from a sequence.
+ * <pre></code>
+ * SELECT seq_xxx.nextval
+ * FROM dual
+ * CONNECT BY rownum <= ?
+ * </code></pre>
+ *
+ * <h2>Database Support</h2>
+ * The following RDBMS have been verified to work
+ * <ul>
+ *  <li>Oracle</li>
+ *  <li>H2</li>
+ *  <li>HSQLDB</li>
+ *  <li>Postgres</li>
+ *  <li>SQL Sever</li>
+ * <ul>
+ * In theory any RDBMS that supports {@code WITH RECURSIVE} and
+ * sequences is supported.
+ */
+public class BatchSequenceGenerator implements BulkInsertionCapableIdentifierGenerator, PersistentIdentifierGenerator, Configurable {
 
   /**
    * Indicates the name of the sequence to use, mandatory.
@@ -66,14 +107,28 @@ public abstract class BatchIdentifierGenerator implements BulkInsertionCapableId
     String sequenceName = determineSequenceName(params);
     this.fetchSize = determineFetchSize(params);
 
-    this.select = this.buildSelect(sequenceName, dialect);
+    this.select = buildSelect(sequenceName, dialect);
     this.identifierExtractor = IdentifierExtractor.getIdentifierExtractor(type.getReturnedClass());
     this.identifierPool = IdentifierPool.empty();
 
     this.databaseStructure = buildDatabaseStructure(type, sequenceName, jdbcEnvironment);
   }
 
-  abstract String buildSelect(String sequenceName, Dialect dialect);
+  private static String buildSelect(String sequenceName, Dialect dialect) {
+    if (dialect instanceof org.hibernate.dialect.Oracle8iDialect) {
+      return "SELECT " + dialect.getSelectSequenceNextValString(sequenceName) + " FROM dual CONNECT BY rownum <= ?";
+    }
+    if (dialect instanceof org.hibernate.dialect.HSQLDialect) {
+      return "SELECT " + dialect.getSelectSequenceNextValString(sequenceName) + " FROM UNNEST(SEQUENCE_ARRAY(1, ?, 1))";
+    }
+    return "WITH RECURSIVE t(n, level_num) AS ("
+            + "SELECT " + dialect.getSelectSequenceNextValString(sequenceName) + " as n, 1 as level_num "
+            + "UNION ALL "
+            + "SELECT " + dialect.getSelectSequenceNextValString(sequenceName) + " as n, level_num + 1 as level_num "
+            + " FROM t "
+            + " WHERE level_num < ?) "
+            + "SELECT n FROM t";
+  }
 
   private SequenceStructure buildDatabaseStructure(Type type, String sequenceName, JdbcEnvironment jdbcEnvironment) {
     return new SequenceStructure(jdbcEnvironment,

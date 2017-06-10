@@ -1,7 +1,7 @@
 package com.github.marschall.hibernate.batchsequencegenerators.entities;
 
-import static com.github.marschall.hibernate.batchsequencegenerators.BatchIdentifierGenerator.FETCH_SIZE_PARAM;
-import static com.github.marschall.hibernate.batchsequencegenerators.BatchIdentifierGenerator.SEQUENCE_PARAM;
+import static com.github.marschall.hibernate.batchsequencegenerators.BatchSequenceGenerator.FETCH_SIZE_PARAM;
+import static com.github.marschall.hibernate.batchsequencegenerators.BatchSequenceGenerator.SEQUENCE_PARAM;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -20,7 +20,7 @@ import org.hibernate.annotations.Parameter;
 public class ParentEntity {
 
   @Id
-  @GenericGenerator(name = "parent_id_generator", strategy = "com.github.marschall.hibernate.batchsequencegenerators.WithRecursiveGenerator",
+  @GenericGenerator(name = "parent_id_generator", strategy = "com.github.marschall.hibernate.batchsequencegenerators.BatchSequenceGenerator",
           parameters = {
               @Parameter(name = SEQUENCE_PARAM, value = "seq_parent_id"),
               @Parameter(name = FETCH_SIZE_PARAM, value = "50")
