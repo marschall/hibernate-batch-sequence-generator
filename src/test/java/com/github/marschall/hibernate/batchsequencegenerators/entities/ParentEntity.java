@@ -22,7 +22,7 @@ public class ParentEntity {
   @Id
   @GenericGenerator(name = "parent_id_generator", strategy = "com.github.marschall.hibernate.batchsequencegenerators.BatchSequenceGenerator",
           parameters = {
-              @Parameter(name = SEQUENCE_PARAM, value = "seq_parent_id"),
+              @Parameter(name = SEQUENCE_PARAM, value = "SEQ_PARENT_ID"),
               @Parameter(name = FETCH_SIZE_PARAM, value = "50")
           })
   @GeneratedValue(generator = "parent_id_generator")

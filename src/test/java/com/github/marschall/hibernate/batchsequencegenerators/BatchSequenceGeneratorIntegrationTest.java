@@ -33,7 +33,9 @@ import com.github.marschall.hibernate.batchsequencegenerators.configurations.Fir
 import com.github.marschall.hibernate.batchsequencegenerators.configurations.H2Configuration;
 import com.github.marschall.hibernate.batchsequencegenerators.configurations.HibernateConfiguration;
 import com.github.marschall.hibernate.batchsequencegenerators.configurations.HsqlConfiguration;
+import com.github.marschall.hibernate.batchsequencegenerators.configurations.MariaConfiguration;
 import com.github.marschall.hibernate.batchsequencegenerators.configurations.PostgresConfiguration;
+import com.github.marschall.hibernate.batchsequencegenerators.configurations.SqlServerConfiguration;
 import com.github.marschall.hibernate.batchsequencegenerators.configurations.TransactionManagerConfiguration;
 import com.github.marschall.hibernate.batchsequencegenerators.entities.ChildEntity;
 import com.github.marschall.hibernate.batchsequencegenerators.entities.ParentEntity;
@@ -54,14 +56,16 @@ public class BatchSequenceGeneratorIntegrationTest {
   @Parameters(name = "{1}")
   public static Collection<Object[]> parameters() {
     return Arrays.asList(
+            new Object[]{MariaConfiguration.class, "maria-default"},
+            new Object[]{MariaConfiguration.class, "maria-batched"},
             new Object[]{FirebirdConfiguration.class, "firebird-default"},
             new Object[]{FirebirdConfiguration.class, "firebird-batched"},
             new Object[]{HsqlConfiguration.class, "hsql-default"},
             new Object[]{HsqlConfiguration.class, "hsql-batched"},
             new Object[]{H2Configuration.class, "h2-default"},
             new Object[]{H2Configuration.class, "h2-batched"},
-            new Object[]{H2Configuration.class, "sqlserver-default"},
-            new Object[]{H2Configuration.class, "sqlserver-batched"},
+            new Object[]{SqlServerConfiguration.class, "sqlserver-default"},
+            new Object[]{SqlServerConfiguration.class, "sqlserver-batched"},
             new Object[]{PostgresConfiguration.class, "postgres-default"},
             new Object[]{PostgresConfiguration.class, "postgres-batched"});
   }
