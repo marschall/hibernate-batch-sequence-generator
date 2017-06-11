@@ -26,9 +26,11 @@ public class FirebirdConfiguration {
     return dataSource;
   }
 
-//  @Bean
+  @Bean
   public DatabasePopulator databasePopulator() {
-    return new ResourceDatabasePopulator(new ClassPathResource("firebird-schema.sql"));
+    ResourceDatabasePopulator populator = new ResourceDatabasePopulator(new ClassPathResource("firebird-schema.sql"));
+    populator.setSeparator("!!");
+    return populator;
   }
 
 }

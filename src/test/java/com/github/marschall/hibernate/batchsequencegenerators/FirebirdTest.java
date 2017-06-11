@@ -60,7 +60,7 @@ public class FirebirdTest {
     try (Connection connection = this.dataSource.getConnection();
          Statement statement = connection.createStatement()) {
 //      statement.execute("DROP SEQUENCE SEQ_CHILD_ID");
-      statement.execute("CREATE SEQUENCE SEQ_PARENT_ID");
+//      statement.execute("CREATE SEQUENCE SEQ_PARENT_ID");
       try (ResultSet resultSet = statement.executeQuery(S)) {
 //      try (ResultSet resultSet = statement.executeQuery("SELECT next value for seq_parent_id as n, 1 as level_num  FROM (VALUES(0))")) {
         while (resultSet.next()) {
