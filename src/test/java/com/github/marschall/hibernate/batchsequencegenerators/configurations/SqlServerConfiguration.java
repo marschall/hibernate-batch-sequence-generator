@@ -26,7 +26,7 @@ public class SqlServerConfiguration {
 
   @Bean
   public DatabasePopulator databasePopulator() {
-    return new ResourceDatabasePopulator(new ClassPathResource("sqlserver-schema.sql"));
+    return new ResourceDatabasePopulator(new ClassPathResource("mssql-schema.sql"));
   }
 
 }

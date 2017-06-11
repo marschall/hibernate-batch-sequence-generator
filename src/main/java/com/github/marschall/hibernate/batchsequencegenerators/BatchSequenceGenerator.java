@@ -119,12 +119,22 @@ public class BatchSequenceGenerator implements BulkInsertionCapableIdentifierGen
     if (dialect instanceof org.hibernate.dialect.Oracle8iDialect) {
       return "SELECT " + dialect.getSelectSequenceNextValString(sequenceName) + " FROM dual CONNECT BY rownum <= ?";
     }
+    if (dialect instanceof org.hibernate.dialect.SQLServerDialect) {
+      // No RECURSIVE
+      return "WITH t(n) AS ( "
+          + "SELECT 1 as n "
+          + "UNION ALL "
+          +"SELECT n + 1 as n FROM t WHERE n < ?) "
+          // sequence generation outside of WITH
+          + "SELECT " + dialect.getSelectSequenceNextValString(sequenceName) + " as n FROM t";
+    }
     if (dialect instanceof org.hibernate.dialect.HSQLDialect) {
       return "SELECT " + dialect.getSelectSequenceNextValString(sequenceName) + " FROM UNNEST(SEQUENCE_ARRAY(1, ?, 1))";
     }
     if (dialect instanceof org.hibernate.dialect.FirebirdDialect) {
       return "WITH RECURSIVE t(n, level_num) AS ("
               + "SELECT " + dialect.getSelectSequenceNextValString(sequenceName) + " as n, 1 as level_num "
+              // difference
               + " FROM rdb$database "
               + "UNION ALL "
               + "SELECT " + dialect.getSelectSequenceNextValString(sequenceName) + " as n, level_num + 1 as level_num "
