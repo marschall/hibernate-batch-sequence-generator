@@ -1,4 +1,4 @@
-package com.github.marschall.hibernate.batchsequencegenerators;
+package com.github.marschall.hibernate.batchsequencegenerator;
 
 import static java.util.Collections.singletonMap;
 
@@ -29,16 +29,16 @@ import org.springframework.jdbc.datasource.init.DatabasePopulator;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import com.github.marschall.hibernate.batchsequencegenerators.configurations.FirebirdConfiguration;
-import com.github.marschall.hibernate.batchsequencegenerators.configurations.H2Configuration;
-import com.github.marschall.hibernate.batchsequencegenerators.configurations.HibernateConfiguration;
-import com.github.marschall.hibernate.batchsequencegenerators.configurations.HsqlConfiguration;
-import com.github.marschall.hibernate.batchsequencegenerators.configurations.MariaConfiguration;
-import com.github.marschall.hibernate.batchsequencegenerators.configurations.PostgresConfiguration;
-import com.github.marschall.hibernate.batchsequencegenerators.configurations.SqlServerConfiguration;
-import com.github.marschall.hibernate.batchsequencegenerators.configurations.TransactionManagerConfiguration;
-import com.github.marschall.hibernate.batchsequencegenerators.entities.ChildEntity;
-import com.github.marschall.hibernate.batchsequencegenerators.entities.ParentEntity;
+import com.github.marschall.hibernate.batchsequencegenerator.configurations.FirebirdConfiguration;
+import com.github.marschall.hibernate.batchsequencegenerator.configurations.H2Configuration;
+import com.github.marschall.hibernate.batchsequencegenerator.configurations.HibernateConfiguration;
+import com.github.marschall.hibernate.batchsequencegenerator.configurations.HsqlConfiguration;
+import com.github.marschall.hibernate.batchsequencegenerator.configurations.MariaConfiguration;
+import com.github.marschall.hibernate.batchsequencegenerator.configurations.PostgresConfiguration;
+import com.github.marschall.hibernate.batchsequencegenerator.configurations.SqlServerConfiguration;
+import com.github.marschall.hibernate.batchsequencegenerator.configurations.TransactionManagerConfiguration;
+import com.github.marschall.hibernate.batchsequencegenerator.entities.ChildEntity;
+import com.github.marschall.hibernate.batchsequencegenerator.entities.ParentEntity;
 
 @RunWith(Parameterized.class)
 public class BatchSequenceGeneratorIntegrationTest {

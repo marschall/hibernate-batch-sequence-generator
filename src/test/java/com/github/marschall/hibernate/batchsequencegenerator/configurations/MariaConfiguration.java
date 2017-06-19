@@ -1,4 +1,4 @@
-package com.github.marschall.hibernate.batchsequencegenerators.configurations;
+package com.github.marschall.hibernate.batchsequencegenerator.configurations;
 
 import javax.sql.DataSource;
 
@@ -10,23 +10,29 @@ import org.springframework.jdbc.datasource.init.DatabasePopulator;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 
 @Configuration
-public class SqlServerConfiguration {
+public class MariaConfiguration {
 
   @Bean
   public DataSource dataSource() {
     SingleConnectionDataSource dataSource = new SingleConnectionDataSource();
     dataSource.setSuppressClose(true);
-    // defaults from Postgres.app
-//    dataSource.setUrl("jdbc:sqlserver://localhost:1433;databaseName=master;user=sa;password=your_password");
-    dataSource.setUrl("jdbc:sqlserver://localhost:1433;databaseName=master");
-    dataSource.setUsername("sa");
-    dataSource.setPassword("Cent-Quick-Space-Bath-8");
+    String userName = "jdbc";
+    String database = "jdbc";
+    // https://mariadb.com/kb/en/mariadb/about-mariadb-connector-j/
+    dataSource.setUrl("jdbc:mariadb://localhost:3306/" + database);
+    dataSource.setUsername(userName);
+    String password = this.isTravis() ? "" : "Cent-Quick-Space-Bath-8";
+    dataSource.setPassword(password);
     return dataSource;
+  }
+
+  private boolean isTravis() {
+    return System.getenv().getOrDefault("TRAVIS", "false").equals("true");
   }
 
   @Bean
   public DatabasePopulator databasePopulator() {
-    return new ResourceDatabasePopulator(new ClassPathResource("mssql-schema.sql"));
+    return new ResourceDatabasePopulator(new ClassPathResource("maria-schema.sql"));
   }
 
 }

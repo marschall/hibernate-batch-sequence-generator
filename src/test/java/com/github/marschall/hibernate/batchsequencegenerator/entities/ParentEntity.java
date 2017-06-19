@@ -1,7 +1,7 @@
-package com.github.marschall.hibernate.batchsequencegenerators.entities;
+package com.github.marschall.hibernate.batchsequencegenerator.entities;
 
-import static com.github.marschall.hibernate.batchsequencegenerators.BatchSequenceGenerator.FETCH_SIZE_PARAM;
-import static com.github.marschall.hibernate.batchsequencegenerators.BatchSequenceGenerator.SEQUENCE_PARAM;
+import static com.github.marschall.hibernate.batchsequencegenerator.BatchSequenceGenerator.FETCH_SIZE_PARAM;
+import static com.github.marschall.hibernate.batchsequencegenerator.BatchSequenceGenerator.SEQUENCE_PARAM;
 
 import java.util.HashSet;
 import java.util.Set;

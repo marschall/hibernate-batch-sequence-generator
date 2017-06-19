@@ -1,4 +1,4 @@
-package com.github.marschall.hibernate.batchsequencegenerators.configurations;
+package com.github.marschall.hibernate.batchsequencegenerator.configurations;
 
 import javax.sql.DataSource;
 

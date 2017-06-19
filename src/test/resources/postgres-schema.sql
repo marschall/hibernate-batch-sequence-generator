@@ -1,3 +1,4 @@
+-- sequence does not have to be dropped because it's owned by the column
 DROP TABLE IF EXISTS CHILD_ENTITY;
 DROP TABLE IF EXISTS PARENT_ENTITY;
 

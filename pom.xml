@@ -4,12 +4,12 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.github.marschall</groupId>
-  <artifactId>hibernate-batch-sequence-generators</artifactId>
+  <artifactId>hibernate-batch-sequence-generator</artifactId>
   <version>1.0.0-SNAPSHOT</version>
   <inceptionYear>2017</inceptionYear>
-  <url>https://github.com/marschall/hibernate-batch-sequence-generators</url>
-  <name>Hibernate Batch Sequence Generators</name>
-  <description>Special purpose implementations of Hibernate Sequence Generators</description>
+  <url>https://github.com/marschall/hibernate-batch-sequence-generator</url>
+  <name>Hibernate Batch Sequence Generator</name>
+  <description>Special purpose implementations of Hibernate sequence generator</description>
 
   <developers>
     <developer>
@@ -33,8 +33,8 @@
   </licenses>
 
   <scm>
-    <connection>scm:git:git@github.com:marschall/hibernate-batch-sequence-generators.git</connection>
-    <developerConnection>scm:git:git@github.com:marschall/hibernate-batch-sequence-generators.git</developerConnection>
+    <connection>scm:git:git@github.com:marschall/hibernate-batch-sequence-generator.git</connection>
+    <developerConnection>scm:git:git@github.com:marschall/hibernate-batch-sequence-generator.git</developerConnection>
     <url>${project.url}</url>
     <tag>HEAD</tag>
   </scm>

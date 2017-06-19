@@ -1,4 +1,4 @@
-package com.github.marschall.hibernate.batchsequencegenerators;
+package com.github.marschall.hibernate.batchsequencegenerator;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
