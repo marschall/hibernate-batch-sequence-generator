@@ -14,7 +14,38 @@ cache value of the sequence configuring how many values are reallocated
 
 Limitations are:
 - limited database support (see below)
-- if you're using hbm2ddl then the `CACHE` value is not set
+- if you're using hbm2ddl then the `CACHE` value on the sequence is not set
+
+Usage
+-----
+
+You can use this generator like this
+
+```java
+@Id
+@GenericGenerator(name = "some_column_name_id_generator", strategy = "com.github.marschall.hibernate.batchsequencegenerator.BatchSequenceGenerator",
+        parameters = {
+            @Parameter(name = SEQUENCE_PARAM, value = "SOME_SEQUENCE_NAME"),
+            @Parameter(name = FETCH_SIZE_PARAM, value = "FETCH_VALUE")
+        })
+@GeneratedValue(generator = "some_column_name_id_generator")
+@Column(name = "SOME_COLUMN_NAME")
+private Long someColumnName;
+```
+
+You need to configure the following things:
+
+<dl>
+<dt>SOME_SEQUENCE_NAME</dt>
+<dd>the SQL name of the sequence from which the values should be fetched</dd>
+<dt>FETCH_VALUE</dt>
+<dd>integer, how many values should be fetched at once, this is be equals to the <code>CACHE</code> value fo the sequence</dd>
+<dt>SOME_COLUMN_NAME</dt>
+<dd>the SQL name of the column for which the value should be generated</dd>
+<dt>some_column_name_id_generator</dt>
+<dd>unique if of the generator</dd>
+</dl>
+
 
 Database Support
 ----------------
@@ -29,8 +60,9 @@ The following RDBMS have been verified to work
 - SQL Sever
 - In theory any RDBMS that supports `WITH RECURSIVE` and sequences is supported.
 
+Unfortunately these RDBMS are currently not supported
 
-- Unfortunately due to the lack of sequences MySQL can not be supported.
+- due to the lack of sequences MySQL can not be supported
 - MariaDB 10.3 works in theory but needs a [pull request](https://github.com/hibernate/hibernate-orm/pull/1930)
 
 DDL
