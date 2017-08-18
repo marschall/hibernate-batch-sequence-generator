@@ -119,6 +119,9 @@ public class BatchSequenceGeneratorIntegrationTest {
 
   @After
   public void tearDown() {
+    if (this.applicationContext == null) { // unsupported database on travis
+      return;
+    }
     this.applicationContext.close();
   }
 
