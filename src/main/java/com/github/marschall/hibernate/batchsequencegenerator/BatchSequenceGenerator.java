@@ -37,28 +37,55 @@ import org.hibernate.type.Type;
  * values from a sequence in a single database access.
  *
  * <h2>SQL</h2>
- * The generated SELECT will look something like this
- * <pre></code>
+ * Per default the generated SELECT will look something like this
+ * <pre><code>
  * WITH RECURSIVE t(n, level_num) AS (
- *     SELECT nextval(seq_xxx) as n, 1 as level_num
- *   UNION ALL
- *     SELECT nextval(seq_xxx) as n, level_num + 1 as level_num
- *     FROM t
- *     WHERE level_num &lt; ?)
+ *   SELECT nextval(seq_xxx) as n, 1 as level_num
+ *     UNION ALL
+ *   SELECT nextval(seq_xxx) as n, level_num + 1 as level_num
+ *   FROM t
+ *   WHERE level_num &lt; ?)
  * SELECT n FROM t;
  * </code></pre>
- * for HSQLDB the generated SELECT will look something like this
- * <pre></code>
+ *
+ * <h3>HSQLDB</h3>
+ * For HSQLDB the generated SELECT will look something like this
+ * <pre><code>
  * SELECT next value for seq_parent_id
  * FROM UNNEST(SEQUENCE_ARRAY(1, ?, 1));
  * </code></pre>
- * for Oracle the generated SELECT will look something like this
+ *
+ * <h3>Oracle</h3>
+ * For Oracle the generated SELECT will look something like this
  * because Oracle does not support using recursive common table
- * expressions in to fetch multiple values from a sequence.
- * <pre></code>
+ * expressions to fetch multiple values from a sequence.
+ * <pre><code>
  * SELECT seq_xxx.nextval
  * FROM dual
- * CONNECT BY rownum <= ?
+ * CONNECT BY rownum &lt;= ?
+ * </code></pre>
+ *
+ * <h3>SQL Server</h3>
+ * For SQL Server the generated SELECT will look something like this
+ * <pre><code>
+ * WITH t(n) AS (
+ *   SELECT 1 as n
+ *     UNION ALL
+ *   SELECT n + 1 as n FROM t WHERE n &lt; ?)
+ * SELECT NEXT VALUE FOR seq_xxx as n FROM t
+ * </code></pre>
+ *
+ * <h3>Firebird</h3>
+ * For Firebird the generated SELECT will look something like this
+ * <pre><code>
+ * WITH RECURSIVE t(n, level_num) AS (
+ *   SELECT NEXT VALUE FOR seq_xxx as n, 1 as level_num
+ *   FROM rdb$database
+ *     UNION ALL
+ *   SELECT NEXT VALUE FOR seq_xxx as n, level_num + 1 as level_num
+ *   FROM t
+ *    WHERE level_num &lt; ?)
+ * SELECT n FROM t
  * </code></pre>
  *
  * <h2>Database Support</h2>
@@ -70,7 +97,7 @@ import org.hibernate.type.Type;
  *  <li>HSQLDB</li>
  *  <li>Postgres</li>
  *  <li>SQL Sever</li>
- * <ul>
+ * </ul>
  * In theory any RDBMS that supports {@code WITH RECURSIVE} and
  * sequences is supported.
  */
