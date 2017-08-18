@@ -36,6 +36,16 @@ import org.hibernate.type.Type;
  * A sequence generator that uses a recursive query to fetch multiple
  * values from a sequence in a single database access.
  *
+ * <h2>Parameters</h2>
+ * The following configuration parameters are supported:
+ * <dl>
+ * <dt>{@value #SEQUENCE_PARAM}</dt>
+ * <dd><strong>mandatory</strong>, name of the sequence to use</dd>
+ * <dt>{@value #FETCH_SIZE_PARAM}</dt>
+ * <dd>optional, how many sequence numbers should be fetched at a time,
+ * default is {@value #DEFAULT_FETCH_SIZE}</dd>
+ * </dl>
+ *
  * <h2>SQL</h2>
  * Per default the generated SELECT will look something like this
  * <pre><code>
