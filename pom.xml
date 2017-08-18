@@ -5,7 +5,7 @@
 
   <groupId>com.github.marschall</groupId>
   <artifactId>hibernate-batch-sequence-generator</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
+  <version>1.0.2-SNAPSHOT</version>
   <inceptionYear>2017</inceptionYear>
   <url>https://github.com/marschall/hibernate-batch-sequence-generator</url>
   <name>Hibernate Batch Sequence Generator</name>
