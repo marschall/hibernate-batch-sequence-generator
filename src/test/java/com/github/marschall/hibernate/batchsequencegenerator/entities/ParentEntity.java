@@ -20,7 +20,9 @@ import org.hibernate.annotations.Parameter;
 public class ParentEntity {
 
   @Id
-  @GenericGenerator(name = "parent_id_generator", strategy = "com.github.marschall.hibernate.batchsequencegenerator.BatchSequenceGenerator",
+  @GenericGenerator(
+          name = "parent_id_generator",
+          strategy = "com.github.marschall.hibernate.batchsequencegenerator.BatchSequenceGenerator",
           parameters = {
               @Parameter(name = SEQUENCE_PARAM, value = "SEQ_PARENT_ID"),
               @Parameter(name = FETCH_SIZE_PARAM, value = "50")
