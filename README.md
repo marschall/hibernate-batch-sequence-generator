@@ -1,4 +1,4 @@
-Hibernate Batch Sequence Generator
+Hibernate Batch Sequence Generator [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.marschall/hibernate-batch-sequence-generator/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.marschall/hibernate-batch-sequence-generator) [![Build Status](https://travis-ci.org/marschall/hibernate-batch-sequence-generator.svg?branch=master)](https://travis-ci.org/marschall/hibernate-batch-sequence-generator)
 ==================================
 
 A batch sequence generator for Hibernate that uses [recursive queries](https://en.wikipedia.org/wiki/Hierarchical_and_recursive_queries_in_SQL) to preallocate multiple values in a single database access.
