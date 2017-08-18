@@ -3,10 +3,10 @@ Hibernate Batch Sequence Generator [![Maven Central](https://maven-badges.heroku
 
 A batch sequence generator for Hibernate that uses [recursive queries](https://en.wikipedia.org/wiki/Hierarchical_and_recursive_queries_in_SQL) to preallocate multiple values in a single database access.
 
-This sequence generator combines the advantages of several existing sequence generators and avoids their disadvantages. .
+This sequence generator combines the advantages of several existing sequence generators and avoids their disadvantages.
 
 - [hi/lo](https://vladmihalcea.com/2014/06/23/the-hilo-algorithm/), all database access has to be aware of it, there is no clear relationship from the sequence to the database value
-- pooled and pooledlo, require to set the increment value on the database sequence, direct use of the sequence causes a lot of waste
+- `pooled` and `pooledlo`, require to set the increment value on the database sequence, direct use of the sequence causes a lot of waste
 - `IDENTITY` does not support JDBC batching
 - `TABLE` has bad write performance
 
