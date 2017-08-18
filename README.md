@@ -39,7 +39,7 @@ You need to configure the following things:
 <dt>SOME_SEQUENCE_NAME</dt>
 <dd>the SQL name of the sequence from which the values should be fetched</dd>
 <dt>FETCH_VALUE</dt>
-<dd>integer, how many values should be fetched at once, this is be equals to the <code>CACHE</code> value fo the sequence</dd>
+<dd>integer, how many values should be fetched at once, this should be equal to the <code>CACHE</code> value of the sequence</dd>
 <dt>SOME_COLUMN_NAME</dt>
 <dd>the SQL name of the column for which the value should be generated</dd>
 <dt>some_column_name_id_generator</dt>
