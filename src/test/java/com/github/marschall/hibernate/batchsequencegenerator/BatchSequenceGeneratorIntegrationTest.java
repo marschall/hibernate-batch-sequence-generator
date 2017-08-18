@@ -33,7 +33,6 @@ import com.github.marschall.hibernate.batchsequencegenerator.configurations.Fire
 import com.github.marschall.hibernate.batchsequencegenerator.configurations.H2Configuration;
 import com.github.marschall.hibernate.batchsequencegenerator.configurations.HibernateConfiguration;
 import com.github.marschall.hibernate.batchsequencegenerator.configurations.HsqlConfiguration;
-import com.github.marschall.hibernate.batchsequencegenerator.configurations.MariaConfiguration;
 import com.github.marschall.hibernate.batchsequencegenerator.configurations.PostgresConfiguration;
 import com.github.marschall.hibernate.batchsequencegenerator.configurations.SqlServerConfiguration;
 import com.github.marschall.hibernate.batchsequencegenerator.configurations.TransactionManagerConfiguration;
@@ -56,8 +55,8 @@ public class BatchSequenceGeneratorIntegrationTest {
   @Parameters(name = "{1}")
   public static Collection<Object[]> parameters() {
     return Arrays.asList(
-            new Object[]{MariaConfiguration.class, "maria-default"},
-            new Object[]{MariaConfiguration.class, "maria-batched"},
+//            new Object[]{MariaConfiguration.class, "maria-default"},
+//            new Object[]{MariaConfiguration.class, "maria-batched"},
             new Object[]{FirebirdConfiguration.class, "firebird-default"},
             new Object[]{FirebirdConfiguration.class, "firebird-batched"},
             new Object[]{HsqlConfiguration.class, "hsql-default"},

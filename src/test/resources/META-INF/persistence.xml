@@ -140,7 +140,8 @@
     <class>com.github.marschall.hibernate.batchsequencegenerators.entities.ChildEntity</class>
 
     <properties>
-      <property name="hibernate.dialect" value="org.hibernate.dialect.MariaDB103Dialect" />
+      <property name="hibernate.dialect" value="org.hibernate.dialect.MariaDB53Dialect" />
+      <!-- <property name="hibernate.dialect" value="com.github.marschall.hibernate.batchsequencegenerator.dialect.MariaDB103Dialect" />  -->
     </properties>
   </persistence-unit>
 
@@ -151,7 +152,8 @@
     <class>com.github.marschall.hibernate.batchsequencegenerators.entities.ChildEntity</class>
 
     <properties>
-      <property name="hibernate.dialect" value="org.hibernate.dialect.MariaDB103Dialect" />
+      <property name="hibernate.dialect" value="org.hibernate.dialect.MariaDB53Dialect" />
+      <!-- <property name="hibernate.dialect" value="com.github.marschall.hibernate.batchsequencegenerator.dialect.MariaDB103Dialect" />  -->
       <property name="hibernate.jdbc.batch_size" value="50" />
       <property name="hibernate.order_inserts" value="true" />
       <property name="hibernate.order_updates" value="true" />

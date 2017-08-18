@@ -1,0 +1,24 @@
+# Use docker-based build environment (instead of openvz)
+sudo: false
+
+language: java
+
+addons:
+  apt:
+    packages:
+      - oracle-java8-installer
+
+jdk:
+  - oraclejdk8
+  
+services:
+  - postgresql
+
+cache:
+  directories:
+    - '$HOME/.m2/repository'
+
+before_script:
+  - psql -c 'create database travis;' -U postgres
+
+install: /bin/true

@@ -1,4 +1,6 @@
-package org.hibernate.dialect;
+package com.github.marschall.hibernate.batchsequencegenerator.dialect;
+
+import org.hibernate.dialect.MariaDB53Dialect;
 
 public class MariaDB103Dialect extends MariaDB53Dialect {
 
