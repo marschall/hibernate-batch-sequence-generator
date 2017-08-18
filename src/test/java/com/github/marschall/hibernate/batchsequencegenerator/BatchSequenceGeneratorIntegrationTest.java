@@ -1,6 +1,7 @@
 package com.github.marschall.hibernate.batchsequencegenerator;
 
 import static java.util.Collections.singletonMap;
+import static org.junit.Assume.assumeTrue;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -71,6 +72,9 @@ public class BatchSequenceGeneratorIntegrationTest {
 
   @Before
   public void setUp() {
+    if (isTravis()) {
+      assumeTrue(isSupportedOnTravis(this.persistenceUnitName));
+    }
     this.applicationContext = new AnnotationConfigApplicationContext();
     this.applicationContext.register(this.databaseConfiguration, HibernateConfiguration.class, TransactionManagerConfiguration.class);
     ConfigurableEnvironment environment = this.applicationContext.getEnvironment();
@@ -86,6 +90,18 @@ public class BatchSequenceGeneratorIntegrationTest {
     this.template.execute(status -> {
       return populateDatabase();
     });
+  }
+
+
+
+  private static boolean isTravis() {
+    return System.getenv().getOrDefault("TRAVIS", "false").equals("true");
+  }
+
+  private static boolean isSupportedOnTravis(String persistenceUnitName) {
+    // firebird and SQL server are currently not supported on travis
+    return !(persistenceUnitName.contains("firebird")
+            || persistenceUnitName.contains("sqlserver"));
   }
 
   private Object populateDatabase() {
