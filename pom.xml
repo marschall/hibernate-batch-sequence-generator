@@ -9,7 +9,7 @@
   <inceptionYear>2017</inceptionYear>
   <url>https://github.com/marschall/hibernate-batch-sequence-generator</url>
   <name>Hibernate Batch Sequence Generator</name>
-  <description>Special purpose implementations of Hibernate sequence generator</description>
+  <description>Special purpose implementation of a Hibernate sequence generator</description>
 
   <developers>
     <developer>
