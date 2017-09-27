@@ -3,13 +3,9 @@ sudo: false
 
 language: java
 
-addons:
-  apt:
-    packages:
-      - oracle-java8-installer
-
 jdk:
   - oraclejdk8
+  - oraclejdk9
   
 services:
   - postgresql
@@ -21,4 +17,3 @@ cache:
 before_script:
   - psql -c 'create database travis;' -U postgres
 
-install: /bin/true
