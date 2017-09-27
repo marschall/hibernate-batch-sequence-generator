@@ -151,6 +151,13 @@
       <version>${hibernate.version}</version>
       <scope>provided</scope>
     </dependency>
+    <!-- needed in Java 9 -->
+    <dependency>
+      <groupId>javax.xml.bind</groupId>
+      <artifactId>jaxb-api</artifactId>
+      <version>1.0.6</version>
+      <scope>provided</scope>
+    </dependency>
 
     <dependency>
       <groupId>junit</groupId>
