@@ -14,9 +14,9 @@ A batch sequence generator for Hibernate that uses [recursive queries](https://e
 
 This sequence generator combines the advantages of several existing sequence generators and avoids their disadvantages:
 
-- [hi/lo](https://vladmihalcea.com/2014/06/23/the-hilo-algorithm/), all database access has to be aware of it, there is no clear relationship from the sequence to the database value
-- `pooled` and `pooledlo`, require to set the increment value on the database sequence, direct use of the sequence causes a lot of waste
-- `IDENTITY` does not support JDBC batching
+- [hi/lo](https://vladmihalcea.com/2014/06/23/the-hilo-algorithm/), all database access has to be aware of it, there is no clear relationship from the current sequence value to the column value
+- `pooled` and `pooledlo`, require to set the `INCREMENT BY` value on the database sequence, direct use of the sequence can cause a lot of identifier waste, the pool size and the value configured need to match
+- `IDENTITY` does not support JDBC batch inserts
 - `TABLE` has bad write performance
 
 The limitations of this sequence generator are:
@@ -35,8 +35,8 @@ You can use this generator like this
         name = "some_column_name_id_generator",
         strategy = "com.github.marschall.hibernate.batchsequencegenerator.BatchSequenceGenerator",
         parameters = {
-            @Parameter(name = SEQUENCE_PARAM, value = "SOME_SEQUENCE_NAME"),
-            @Parameter(name = FETCH_SIZE_PARAM, value = "FETCH_VALUE")
+            @Parameter(name = "sequence", value = "SOME_SEQUENCE_NAME"),
+            @Parameter(name = "fetch_size", value = "SOME_FETCH_SIZE_VALUE")
         })
 @GeneratedValue(generator = "some_column_name_id_generator")
 @Column(name = "SOME_COLUMN_NAME")
@@ -48,7 +48,7 @@ You need to configure the following things:
 <dl>
 <dt>SOME_SEQUENCE_NAME</dt>
 <dd>the SQL name of the sequence from which the values should be fetched</dd>
-<dt>FETCH_VALUE</dt>
+<dt>SOME_FETCH_SIZE_VALUE</dt>
 <dd>integer, how many values should be fetched at once, this should be equal to the <code>CACHE</code> value of the sequence</dd>
 <dt>SOME_COLUMN_NAME</dt>
 <dd>the SQL name of the column for which the value should be generated</dd>
@@ -78,7 +78,7 @@ Unfortunately these RDBMS are currently not supported
 DDL
 ---
 
-For the best possible performance set the `CACHE` value of the databse sequence to the same value as how many values from the sequences should be fetched from the database.
+For the best possible performance set the `CACHE` value of the database sequence to the same value as the `"fetch_size"` parameter.
 
 Hibernate Versions
 ------------------
