@@ -12,22 +12,29 @@ A batch sequence generator for Hibernate that uses [recursive queries](https://e
 </dependency>
 ```
 
-This sequence generator combines the advantages of several existing sequence generators and avoids their disadvantages:
+This sequence generator combines the advantages of several existing sequence generators and avoids their disadvantages
 
-- [hi/lo](https://vladmihalcea.com/2014/06/23/the-hilo-algorithm/), all database access has to be aware of it, there is no clear relationship from the current sequence value to the column value
-- `pooled` and `pooledlo`, require to set the `INCREMENT BY` value on the database sequence, direct use of the sequence can cause a lot of identifier waste, the pool size and the value configured need to match
-- `IDENTITY` does not support JDBC batch inserts
-- `TABLE` has bad write performance
+- [hi/lo](https://vladmihalcea.com/2014/06/23/the-hilo-algorithm/)
+-- all database access has to be aware of it
+-- there is no clear relationship from the current sequence value to the column value
+- `pooled` and `pooledlo`
+-- `INCREMENT BY` value has to be set on the database sequence
+-- direct use of the sequence can cause a lot of identifier wastei
+-- the pool size and the value configured need to match
+- `IDENTITY`
+-- does not support JDBC batch inserts
+- `TABLE`
+-- has bad write performance
 
-The limitations of this sequence generator are:
+The limitations of this sequence generator are
 
-- limited database support (see below)
+- limited database dialect support (see below)
 - if you're using hbm2ddl then the `CACHE` value on the sequence is not set
 
 Usage
 -----
 
-You can use this generator like this
+You can use this sequence generator like this
 
 ```java
 @Id
@@ -43,7 +50,7 @@ You can use this generator like this
 private Long someColumnName;
 ```
 
-You need to configure the following things:
+You need to configure the following things
 
 <dl>
 <dt>SOME_SEQUENCE_NAME</dt>
@@ -72,13 +79,13 @@ The following RDBMS have been verified to work
 
 Unfortunately these RDBMS are currently not supported
 
-- due to the lack of sequences MySQL can not be supported
+- MySQL due to the lack of sequence support
 - MariaDB 10.3 works in theory but needs a [pull request](https://github.com/hibernate/hibernate-orm/pull/1930)
 
 DDL
 ---
 
-For the best possible performance set the `CACHE` value of the database sequence to the same value as the `"fetch_size"` parameter.
+For the best possible performance the `CACHE` value of the database sequence should be set to the same value as the `"fetch_size"` parameter.
 
 Hibernate Versions
 ------------------
