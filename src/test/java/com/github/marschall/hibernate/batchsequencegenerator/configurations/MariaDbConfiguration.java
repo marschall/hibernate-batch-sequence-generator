@@ -10,24 +10,17 @@ import org.springframework.jdbc.datasource.init.DatabasePopulator;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 
 @Configuration
-public class MariaConfiguration {
+public class MariaDbConfiguration {
 
   @Bean
   public DataSource dataSource() {
     SingleConnectionDataSource dataSource = new SingleConnectionDataSource();
     dataSource.setSuppressClose(true);
-    String userName = "jdbc";
-    String database = "jdbc";
     // https://mariadb.com/kb/en/mariadb/about-mariadb-connector-j/
-    dataSource.setUrl("jdbc:mariadb://localhost:3306/" + database);
-    dataSource.setUsername(userName);
-    String password = this.isTravis() ? "" : "Cent-Quick-Space-Bath-8";
-    dataSource.setPassword(password);
+    dataSource.setUrl("jdbc:mariadb://localhost:3307/jdbc");
+    dataSource.setUsername("jdbc");
+    dataSource.setPassword("Cent-Quick-Space-Bath-8");
     return dataSource;
-  }
-
-  private boolean isTravis() {
-    return System.getenv().getOrDefault("TRAVIS", "false").equals("true");
   }
 
   @Bean

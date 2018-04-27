@@ -80,7 +80,7 @@ The following RDBMS have been verified to work
 Unfortunately these RDBMS are currently not supported
 
 - MySQL due to the lack of sequence support
-- MariaDB 10.3 works in theory but needs a [pull request](https://github.com/hibernate/hibernate-orm/pull/1930)
+- MariaDB 10.3 needs Hibernate 5.2.17 or later
 
 DDL
 ---

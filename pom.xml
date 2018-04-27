@@ -310,9 +310,9 @@
     <javac.target>1.8</javac.target>
     <project.reporting.outputEncoding>utf-8</project.reporting.outputEncoding>
     <project.build.sourceEncoding>utf-8</project.build.sourceEncoding>
-    <hibernate.version>5.2.11.Final</hibernate.version>
-    <spring.version>4.3.11.RELEASE</spring.version>
-    <log4j.version>2.8.2</log4j.version>
+    <hibernate.version>5.2.17.Final</hibernate.version>
+    <spring.version>5.0.5.RELEASE</spring.version>
+    <log4j.version>2.11.0</log4j.version>
   </properties>
 
 </project>
