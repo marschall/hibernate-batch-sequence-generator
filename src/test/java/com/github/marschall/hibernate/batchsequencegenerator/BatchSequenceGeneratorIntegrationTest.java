@@ -1,13 +1,11 @@
 package com.github.marschall.hibernate.batchsequencegenerator;
 
 import static java.util.Collections.singletonMap;
-import static org.junit.Assume.assumeTrue;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -15,12 +13,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.MapPropertySource;
@@ -43,47 +38,40 @@ import com.github.marschall.hibernate.batchsequencegenerator.configurations.Tran
 import com.github.marschall.hibernate.batchsequencegenerator.entities.ChildEntity;
 import com.github.marschall.hibernate.batchsequencegenerator.entities.ParentEntity;
 
-@RunWith(Parameterized.class)
 public class BatchSequenceGeneratorIntegrationTest {
 
-  private final Class<?> databaseConfiguration;
-  private final String persistenceUnitName;
   private AnnotationConfigApplicationContext applicationContext;
   private TransactionTemplate template;
 
-  public BatchSequenceGeneratorIntegrationTest(Class<?> datasourceConfiguration, String persistenceUnitName) {
-    this.databaseConfiguration = datasourceConfiguration;
-    this.persistenceUnitName = persistenceUnitName;
+
+
+  public static List<Arguments> parameters() {
+    List<Arguments> parameters = new ArrayList<>();
+
+    parameters.add(Arguments.of(MariaDbConfiguration.class, "maria-default"));
+    parameters.add(Arguments.of(MariaDbConfiguration.class, "maria-batched"));
+    parameters.add(Arguments.of(FirebirdConfiguration.class, "firebird-default"));
+    parameters.add(Arguments.of(FirebirdConfiguration.class, "firebird-batched"));
+    parameters.add(Arguments.of(HsqlConfiguration.class, "hsql-default"));
+    parameters.add(Arguments.of(HsqlConfiguration.class, "hsql-batched"));
+    parameters.add(Arguments.of(H2Configuration.class, "h2-default"));
+    parameters.add(Arguments.of(H2Configuration.class, "h2-batched"));
+    parameters.add(Arguments.of(SqlServerConfiguration.class, "sqlserver-default"));
+    parameters.add(Arguments.of(SqlServerConfiguration.class, "sqlserver-batched"));
+    parameters.add(Arguments.of(PostgresConfiguration.class, "postgres-default"));
+    parameters.add(Arguments.of(PostgresConfiguration.class, "postgres-batched"));
+    return parameters;
   }
 
-  @Parameters(name = "{1}")
-  public static Collection<Object[]> parameters() {
-    return Arrays.asList(
-            new Object[]{MariaDbConfiguration.class, "maria-default"},
-            new Object[]{MariaDbConfiguration.class, "maria-batched"},
-            new Object[]{FirebirdConfiguration.class, "firebird-default"},
-            new Object[]{FirebirdConfiguration.class, "firebird-batched"},
-            new Object[]{HsqlConfiguration.class, "hsql-default"},
-            new Object[]{HsqlConfiguration.class, "hsql-batched"},
-            new Object[]{H2Configuration.class, "h2-default"},
-            new Object[]{H2Configuration.class, "h2-batched"},
-            new Object[]{SqlServerConfiguration.class, "sqlserver-default"},
-            new Object[]{SqlServerConfiguration.class, "sqlserver-batched"},
-            new Object[]{PostgresConfiguration.class, "postgres-default"},
-            new Object[]{PostgresConfiguration.class, "postgres-batched"}
-            );
-  }
-
-  @Before
-  public void setUp() {
+  private void setUp(Class<?> dataSourceConfiguration, String persistenceUnitName) {
     if (isTravis()) {
-      assumeTrue(isSupportedOnTravis(this.persistenceUnitName));
+      assumeTrue(isSupportedOnTravis(persistenceUnitName));
     }
     this.applicationContext = new AnnotationConfigApplicationContext();
-    this.applicationContext.register(this.databaseConfiguration, HibernateConfiguration.class, TransactionManagerConfiguration.class);
+    this.applicationContext.register(dataSourceConfiguration, HibernateConfiguration.class, TransactionManagerConfiguration.class);
     ConfigurableEnvironment environment = this.applicationContext.getEnvironment();
     MutablePropertySources propertySources = environment.getPropertySources();
-    Map<String, Object> source = singletonMap(HibernateConfiguration.PERSISTENCE_UNIT_NAME, this.persistenceUnitName);
+    Map<String, Object> source = singletonMap(HibernateConfiguration.PERSISTENCE_UNIT_NAME, persistenceUnitName);
     propertySources.addFirst(new MapPropertySource("persistence unit name", source));
     this.applicationContext.refresh();
 
@@ -121,39 +109,44 @@ public class BatchSequenceGeneratorIntegrationTest {
     return null;
   }
 
-  @After
-  public void tearDown() {
+  private void tearDown() {
     if (this.applicationContext == null) { // unsupported database on travis
       return;
     }
     this.applicationContext.close();
   }
 
-  @Test
-  public void parentChildInstert() {
+  @ParameterizedTest
+  @MethodSource("parameters")
+  public void parentChildInstert(Class<?> dataSourceConfiguration, String persistenceUnitName) {
+    this.setUp(dataSourceConfiguration, persistenceUnitName);
     EntityManagerFactory factory = this.applicationContext.getBean(EntityManagerFactory.class);
-    this.template.execute(status -> {
-      EntityManager entityManager = EntityManagerFactoryUtils.getTransactionalEntityManager(factory);
-      int parentCount = 100;
-      List<ParentEntity> parents = new ArrayList<>(parentCount);
-      for (int i = 0; i < parentCount; i++) {
-        ParentEntity parent = new ParentEntity();
+    try {
+      this.template.execute(status -> {
+        EntityManager entityManager = EntityManagerFactoryUtils.getTransactionalEntityManager(factory);
+        int parentCount = 100;
+        List<ParentEntity> parents = new ArrayList<>(parentCount);
+        for (int i = 0; i < parentCount; i++) {
+          ParentEntity parent = new ParentEntity();
 
-        parent.addChild(new ChildEntity());
-        parent.addChild(new ChildEntity());
+          parent.addChild(new ChildEntity());
+          parent.addChild(new ChildEntity());
 
-        parents.add(parent);
-      }
-      for (ParentEntity parent : parents) {
-        entityManager.persist(parent);
-        for (ChildEntity child : parent.getChildren()) {
-          child.setParentId(parent.getParentId());
-          entityManager.persist(child);
+          parents.add(parent);
         }
-      }
-      status.flush();
-      return null;
-    });
+        for (ParentEntity parent : parents) {
+          entityManager.persist(parent);
+          for (ChildEntity child : parent.getChildren()) {
+            child.setParentId(parent.getParentId());
+            entityManager.persist(child);
+          }
+        }
+        status.flush();
+        return null;
+      });
+    } finally {
+      this.tearDown();
+    }
   }
 
 }
