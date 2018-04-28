@@ -13,7 +13,6 @@ import java.util.Map;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
 import javax.sql.DataSource;
 
 import org.junit.After;
@@ -27,7 +26,10 @@ import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.MapPropertySource;
 import org.springframework.core.env.MutablePropertySources;
 import org.springframework.jdbc.datasource.init.DatabasePopulator;
+import org.springframework.orm.jpa.EntityManagerFactoryUtils;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import com.github.marschall.hibernate.batchsequencegenerator.configurations.FirebirdConfiguration;
@@ -68,7 +70,8 @@ public class BatchSequenceGeneratorIntegrationTest {
             new Object[]{SqlServerConfiguration.class, "sqlserver-default"},
             new Object[]{SqlServerConfiguration.class, "sqlserver-batched"},
             new Object[]{PostgresConfiguration.class, "postgres-default"},
-            new Object[]{PostgresConfiguration.class, "postgres-batched"});
+            new Object[]{PostgresConfiguration.class, "postgres-batched"}
+            );
   }
 
   @Before
@@ -85,9 +88,8 @@ public class BatchSequenceGeneratorIntegrationTest {
     this.applicationContext.refresh();
 
     PlatformTransactionManager txManager = this.applicationContext.getBean(PlatformTransactionManager.class);
-    this.template = new TransactionTemplate(txManager);
-    this.template.setPropagationBehavior(0);
-
+    TransactionDefinition transactionDefinition = new DefaultTransactionDefinition(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
+    this.template = new TransactionTemplate(txManager, transactionDefinition);
     this.template.execute(status -> {
       return this.populateDatabase();
     });
@@ -130,12 +132,8 @@ public class BatchSequenceGeneratorIntegrationTest {
   @Test
   public void parentChildInstert() {
     EntityManagerFactory factory = this.applicationContext.getBean(EntityManagerFactory.class);
-    EntityManager entityManager = factory.createEntityManager();
-    EntityTransaction transaction = entityManager.getTransaction();
-    try {
-      //      this.template.execute((s) -> {
-      transaction.begin();
-      //        this.populateDatabase();
+    this.template.execute(status -> {
+      EntityManager entityManager = EntityManagerFactoryUtils.getTransactionalEntityManager(factory);
       int parentCount = 100;
       List<ParentEntity> parents = new ArrayList<>(parentCount);
       for (int i = 0; i < parentCount; i++) {
@@ -153,14 +151,9 @@ public class BatchSequenceGeneratorIntegrationTest {
           entityManager.persist(child);
         }
       }
-      //        entityManager.flush();
-      //        s.flush();
-      //        return null;
-      //      });
-      transaction.commit();
-    } finally {
-      entityManager.close();
-    }
+      status.flush();
+      return null;
+    });
   }
 
 }

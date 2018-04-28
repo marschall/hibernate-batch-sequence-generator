@@ -25,7 +25,7 @@ public class MariaDbConfiguration {
 
   @Bean
   public DatabasePopulator databasePopulator() {
-    return new ResourceDatabasePopulator(new ClassPathResource("maria-schema.sql"));
+    return new ResourceDatabasePopulator(new ClassPathResource("mariadb-schema.sql"));
   }
 
 }

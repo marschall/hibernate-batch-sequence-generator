@@ -26,9 +26,9 @@ public class H2Configuration {
 
   @Bean
   public DataSource dataSource() {
-    String persistenceUnitName = environment.getProperty(HibernateConfiguration.PERSISTENCE_UNIT_NAME);
-    DataSource dataSource = buildH2DataSource();
-    if (persistenceUnitName != null && persistenceUnitName.endsWith("-batched")) {
+    String persistenceUnitName = this.environment.getProperty(HibernateConfiguration.PERSISTENCE_UNIT_NAME);
+    DataSource dataSource = this.buildH2DataSource();
+    if ((persistenceUnitName != null) && persistenceUnitName.endsWith("-batched")) {
       return wrapWithLogging(dataSource, "h2-test");
     } else {
       return dataSource;
