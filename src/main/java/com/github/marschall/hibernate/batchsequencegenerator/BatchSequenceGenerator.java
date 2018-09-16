@@ -149,7 +149,7 @@ public class BatchSequenceGenerator implements BulkInsertionCapableIdentifierGen
     this.identifierExtractor = IdentifierExtractor.getIdentifierExtractor(type.getReturnedClass());
     this.identifierPool = IdentifierPool.empty();
 
-    this.databaseStructure = buildDatabaseStructure(type, sequenceName, jdbcEnvironment);
+    this.databaseStructure = this.buildDatabaseStructure(type, sequenceName, jdbcEnvironment);
   }
 
   private static String buildSelect(String sequenceName, Dialect dialect) {
@@ -166,6 +166,7 @@ public class BatchSequenceGenerator implements BulkInsertionCapableIdentifierGen
           + "SELECT " + dialect.getSelectSequenceNextValString(sequenceName) + " as n FROM t";
     }
     if (dialect instanceof org.hibernate.dialect.HSQLDialect) {
+      // https://stackoverflow.com/questions/44472280/cte-based-sequence-generation-with-hsqldb/52329862
       return "SELECT " + dialect.getSelectSequenceNextValString(sequenceName) + " FROM UNNEST(SEQUENCE_ARRAY(1, ?, 1))";
     }
     if (dialect instanceof org.hibernate.dialect.FirebirdDialect) {
@@ -216,7 +217,7 @@ public class BatchSequenceGenerator implements BulkInsertionCapableIdentifierGen
 
   @Override
   public String determineBulkInsertionIdentifierGenerationSelectFragment(Dialect dialect) {
-    return dialect.getSelectSequenceNextValString(getSequenceName());
+    return dialect.getSelectSequenceNextValString(this.getSequenceName());
   }
 
   @Override
@@ -234,7 +235,7 @@ public class BatchSequenceGenerator implements BulkInsertionCapableIdentifierGen
 
   @Override
   public Object generatorKey() {
-    return getSequenceName();
+    return this.getSequenceName();
   }
 
   private String getSequenceName() {
@@ -364,10 +365,10 @@ public class BatchSequenceGenerator implements BulkInsertionCapableIdentifierGen
     abstract Serializable extractIdentifier(ResultSet resultSet) throws SQLException;
 
     static IdentifierExtractor getIdentifierExtractor(Class<?> integralType) {
-      if (integralType == Integer.class || integralType == int.class) {
+      if ((integralType == Integer.class) || (integralType == int.class)) {
         return INTEGER_IDENTIFIER_EXTRACTOR;
       }
-      if (integralType == Long.class || integralType == long.class) {
+      if ((integralType == Long.class) || (integralType == long.class)) {
         return LONG_IDENTIFIER_EXTRACTOR;
       }
       if (integralType == BigInteger.class) {
