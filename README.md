@@ -72,6 +72,7 @@ The following RDBMS have been verified to work
 - Firebird
 - H2
 - HSQLDB
+- MariaDB 10.3 with Hibernate 5.2.17
 - Oracle
 - Postgres
 - SQL Sever
@@ -80,7 +81,6 @@ The following RDBMS have been verified to work
 Unfortunately these RDBMS are currently not supported
 
 - MySQL due to the lack of sequence support
-- MariaDB 10.3 needs Hibernate 5.2.17 or later
 
 DDL
 ---
