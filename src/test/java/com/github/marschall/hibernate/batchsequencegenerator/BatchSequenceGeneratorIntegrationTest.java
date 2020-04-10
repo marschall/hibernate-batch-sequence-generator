@@ -32,6 +32,7 @@ import com.github.marschall.hibernate.batchsequencegenerator.configurations.H2Co
 import com.github.marschall.hibernate.batchsequencegenerator.configurations.HibernateConfiguration;
 import com.github.marschall.hibernate.batchsequencegenerator.configurations.HsqlConfiguration;
 import com.github.marschall.hibernate.batchsequencegenerator.configurations.MariaDbConfiguration;
+import com.github.marschall.hibernate.batchsequencegenerator.configurations.OracleConfiguration;
 import com.github.marschall.hibernate.batchsequencegenerator.configurations.PostgresConfiguration;
 import com.github.marschall.hibernate.batchsequencegenerator.configurations.SqlServerConfiguration;
 import com.github.marschall.hibernate.batchsequencegenerator.configurations.TransactionManagerConfiguration;
@@ -60,6 +61,8 @@ public class BatchSequenceGeneratorIntegrationTest {
     parameters.add(Arguments.of(SqlServerConfiguration.class, "sqlserver-batched"));
     parameters.add(Arguments.of(PostgresConfiguration.class, "postgres-default"));
     parameters.add(Arguments.of(PostgresConfiguration.class, "postgres-batched"));
+    parameters.add(Arguments.of(OracleConfiguration.class, "oracle-default"));
+    parameters.add(Arguments.of(OracleConfiguration.class, "oracle-batched"));
     return parameters;
   }
 
@@ -90,10 +93,11 @@ public class BatchSequenceGeneratorIntegrationTest {
   }
 
   private static boolean isSupportedOnTravis(String persistenceUnitName) {
-    // firebird and SQL server are currently not supported on travis
+    // Firebird, SQL Server, MariaDB and Oracle are currently not supported on Travis CI
     return !(persistenceUnitName.contains("firebird")
             || persistenceUnitName.contains("sqlserver")
-            || persistenceUnitName.contains("maria"));
+            || persistenceUnitName.contains("maria")
+            || persistenceUnitName.contains("oracle"));
   }
 
   private Object populateDatabase() {
