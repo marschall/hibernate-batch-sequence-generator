@@ -6,9 +6,9 @@ A batch sequence generator for Hibernate that uses [recursive queries](https://e
 
 ```xml
 <dependency>
-    <groupId>com.github.marschall</groupId>
-    <artifactId>hibernate-batch-sequence-generator</artifactId>
-    <version>1.0.2</version>
+  <groupId>com.github.marschall</groupId>
+  <artifactId>hibernate-batch-sequence-generator</artifactId>
+  <version>1.0.3</version>
 </dependency>
 ```
 
