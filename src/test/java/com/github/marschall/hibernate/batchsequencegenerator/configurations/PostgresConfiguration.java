@@ -1,5 +1,7 @@
 package com.github.marschall.hibernate.batchsequencegenerator.configurations;
 
+import static com.github.marschall.hibernate.batchsequencegenerator.Travis.isTravis;
+
 import javax.sql.DataSource;
 
 import org.springframework.context.annotation.Bean;
@@ -17,10 +19,11 @@ public class PostgresConfiguration {
     SingleConnectionDataSource dataSource = new SingleConnectionDataSource();
     dataSource.setSuppressClose(true);
     String userName = System.getProperty("user.name");
-    // defaults from Postgres.app
     dataSource.setUrl("jdbc:postgresql:" + userName);
     dataSource.setUsername(userName);
-    dataSource.setPassword("");
+
+    String password = isTravis() ? "" : "Cent-Quick-Space-Bath-8";
+    dataSource.setPassword(password);
     return dataSource;
   }
 
