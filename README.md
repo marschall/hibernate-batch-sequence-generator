@@ -15,16 +15,16 @@ A batch sequence generator for Hibernate that uses [recursive queries](https://e
 This sequence generator combines the advantages of several existing sequence generators and avoids their disadvantages
 
 - [hi/lo](https://vladmihalcea.com/2014/06/23/the-hilo-algorithm/)
--- all database access has to be aware of it
--- there is no clear relationship from the current sequence value to the column value
+  - all database access has to be aware of it
+  - there is no clear relationship from the current sequence value to the column value
 - `pooled` and `pooledlo`
--- `INCREMENT BY` value has to be set on the database sequence
--- direct use of the sequence can cause a lot of identifier wastei
--- the pool size and the value configured need to match
+  - `INCREMENT BY` value has to be set on the database sequence
+  - direct use of the sequence can cause a lot of identifier wastei
+  - the pool size and the value configured need to match
 - `IDENTITY`
--- does not support JDBC batch inserts
+  - does not support JDBC batch inserts
 - `TABLE`
--- has bad write performance
+  - has bad write performance
 
 The limitations of this sequence generator are
 
