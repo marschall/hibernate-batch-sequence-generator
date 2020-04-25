@@ -27,6 +27,7 @@ import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.springframework.transaction.support.TransactionTemplate;
 
+import com.github.marschall.hibernate.batchsequencegenerator.configurations.Db2Configuration;
 import com.github.marschall.hibernate.batchsequencegenerator.configurations.FirebirdConfiguration;
 import com.github.marschall.hibernate.batchsequencegenerator.configurations.H2Configuration;
 import com.github.marschall.hibernate.batchsequencegenerator.configurations.HibernateConfiguration;
@@ -49,6 +50,8 @@ public class BatchSequenceGeneratorIntegrationTest {
   public static List<Arguments> parameters() {
     List<Arguments> parameters = new ArrayList<>();
 
+    parameters.add(Arguments.of(Db2Configuration.class, "db2-default"));
+    parameters.add(Arguments.of(Db2Configuration.class, "db2-batched"));
     parameters.add(Arguments.of(MariaDbConfiguration.class, "maria-default"));
     parameters.add(Arguments.of(MariaDbConfiguration.class, "maria-batched"));
     parameters.add(Arguments.of(FirebirdConfiguration.class, "firebird-default"));
@@ -93,11 +96,12 @@ public class BatchSequenceGeneratorIntegrationTest {
   }
 
   private static boolean isSupportedOnTravis(String persistenceUnitName) {
-    // Firebird, SQL Server, MariaDB and Oracle are currently not supported on Travis CI
+    // DB2, Firebird, SQL Server, MariaDB and Oracle are currently not supported on Travis CI
     return !(persistenceUnitName.contains("firebird")
             || persistenceUnitName.contains("sqlserver")
             || persistenceUnitName.contains("maria")
-            || persistenceUnitName.contains("oracle"));
+            || persistenceUnitName.contains("oracle")
+            || persistenceUnitName.contains("db2"));
   }
 
   private Object populateDatabase() {

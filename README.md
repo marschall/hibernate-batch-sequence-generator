@@ -69,6 +69,7 @@ Database Support
 
 The following RDBMS have been verified to work
 
+- DB2
 - Firebird
 - H2
 - HSQLDB
@@ -90,7 +91,7 @@ For the best possible performance the `CACHE` value of the database sequence sho
 Hibernate Versions
 ------------------
 
-The project has been developed and tested against Hibernate 5.2.
+The project has been developed and tested against Hibernate 5.4.
 
 Dependencies
 ------------

@@ -55,14 +55,29 @@ import org.hibernate.type.Type;
  *   SELECT nextval(seq_xxx) as n, level_num + 1 as level_num
  *   FROM t
  *   WHERE level_num &lt; ?)
- * SELECT n FROM t;
+ * SELECT n
+ *   FROM t;
+ * </code></pre>
+ *
+ * <h3>DB2</h3>
+ * For DB2 the generated SELECT will look something like this
+ * <pre><code>
+ * WITH t(n) AS (
+ *   SELECT 1 as n
+ *     FROM (VALUES 1)
+ *       UNION ALL
+ *     SELECT n + 1 as n
+ *       FROM t
+ *      WHERE n &lt; ?)
+ * SELECT next value for SEQ_CHILD_ID as n
+ *   FROM t;
  * </code></pre>
  *
  * <h3>HSQLDB</h3>
  * For HSQLDB the generated SELECT will look something like this
  * <pre><code>
  * SELECT next value for seq_parent_id
- * FROM UNNEST(SEQUENCE_ARRAY(1, ?, 1));
+ *   FROM UNNEST(SEQUENCE_ARRAY(1, ?, 1));
  * </code></pre>
  *
  * <h3>Oracle</h3>
@@ -81,8 +96,11 @@ import org.hibernate.type.Type;
  * WITH t(n) AS (
  *   SELECT 1 as n
  *     UNION ALL
- *   SELECT n + 1 as n FROM t WHERE n &lt; ?)
- * SELECT NEXT VALUE FOR seq_xxx as n FROM t
+ *   SELECT n + 1 as n
+ *     FROM t
+ *    WHERE n &lt; ?)
+ * SELECT NEXT VALUE FOR seq_xxx as n
+ *   FROM t
  * </code></pre>
  *
  * <h3>Firebird</h3>
@@ -93,14 +111,16 @@ import org.hibernate.type.Type;
  *   FROM rdb$database
  *     UNION ALL
  *   SELECT NEXT VALUE FOR seq_xxx as n, level_num + 1 as level_num
- *   FROM t
+ *     FROM t
  *    WHERE level_num &lt; ?)
- * SELECT n FROM t
+ * SELECT n
+ *   FROM t
  * </code></pre>
  *
  * <h2>Database Support</h2>
  * The following RDBMS have been verified to work
  * <ul>
+ *  <li>DB2</li>
  *  <li>Firebird</li>
  *  <li>Oracle</li>
  *  <li>H2</li>
@@ -163,6 +183,17 @@ public class BatchSequenceGenerator implements BulkInsertionCapableIdentifierGen
           + "UNION ALL "
           +"SELECT n + 1 as n FROM t WHERE n < ?) "
           // sequence generation outside of WITH
+          + "SELECT " + dialect.getSelectSequenceNextValString(sequenceName) + " as n FROM t";
+    }
+    if (dialect instanceof org.hibernate.dialect.DB2Dialect) {
+      // No RECURSIVE
+      return "WITH t(n) AS ( "
+          + "SELECT 1 as n "
+          // difference
+          + "FROM (VALUES 1) "
+          + "UNION ALL "
+          +"SELECT n + 1 as n FROM t WHERE n < ?) "
+      // sequence generation outside of WITH
           + "SELECT " + dialect.getSelectSequenceNextValString(sequenceName) + " as n FROM t";
     }
     if (dialect instanceof org.hibernate.dialect.HSQLDialect) {
