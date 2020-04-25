@@ -8,7 +8,7 @@ A batch sequence generator for Hibernate that uses [recursive queries](https://e
 <dependency>
   <groupId>com.github.marschall</groupId>
   <artifactId>hibernate-batch-sequence-generator</artifactId>
-  <version>1.0.3</version>
+  <version>1.1.0</version>
 </dependency>
 ```
 
@@ -73,7 +73,7 @@ The following RDBMS have been verified to work
 - Firebird
 - H2
 - HSQLDB
-- MariaDB 10.3 with Hibernate 5.2.17
+- MariaDB 10.3 with Hibernate 5.2.17 or later
 - Oracle
 - Postgres
 - SQL Sever
