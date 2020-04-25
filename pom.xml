@@ -353,7 +353,7 @@
     <project.reporting.outputEncoding>utf-8</project.reporting.outputEncoding>
     <project.build.sourceEncoding>utf-8</project.build.sourceEncoding>
     <hibernate.version>5.4.13.Final</hibernate.version>
-    <log4j.version>2.13.1</log4j.version>
+    <log4j.version>2.13.2</log4j.version>
   </properties>
 
 </project>
