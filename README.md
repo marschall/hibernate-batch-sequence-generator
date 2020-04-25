@@ -19,8 +19,8 @@ This sequence generator combines the advantages of several existing sequence gen
   - there is no clear relationship from the current sequence value to the column value
 - `pooled` and `pooledlo`
   - `INCREMENT BY` value has to be set on the database sequence
-  - direct use of the sequence can cause a lot of identifier wastei
-  - the pool size and the value configured need to match
+  - direct use of the sequence can cause a lot of identifier waste
+  - the pool size and the `INCREMENT BY` value need to match
 - `IDENTITY`
   - does not support JDBC batch inserts
 - `TABLE`
