@@ -33,11 +33,10 @@ public class ParentEntity {
 
   @OneToMany
   @JoinColumn(name = "PARENT_ID")
-//  @Cascade({CascadeType.PERSIST})
   private Set<ChildEntity> children = new HashSet<>();
 
   public Long getParentId() {
-    return parentId;
+    return this.parentId;
   }
 
   public void setParentId(Long parentId) {
@@ -45,7 +44,7 @@ public class ParentEntity {
   }
 
   public Set<ChildEntity> getChildren() {
-    return children;
+    return this.children;
   }
 
   public void setChildren(Set<ChildEntity> children) {
