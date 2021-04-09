@@ -2,6 +2,7 @@ package com.github.marschall.hibernate.batchsequencegenerator.configurations;
 
 import javax.sql.DataSource;
 
+import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
@@ -15,6 +16,11 @@ public class FirebirdConfiguration {
 
   @Bean
   public DataSource dataSource() {
+    try {
+      Class.forName("org.firebirdsql.jdbc.FBDriver");
+    } catch (ClassNotFoundException e) {
+      throw new BeanCreationException("could not register driver", e);
+    }
     SingleConnectionDataSource dataSource = new SingleConnectionDataSource();
     dataSource.setSuppressClose(true);
     // https://www.firebirdsql.org/file/documentation/drivers_documentation/java/faq.html#jdbc-urls-java.sql.drivermanager

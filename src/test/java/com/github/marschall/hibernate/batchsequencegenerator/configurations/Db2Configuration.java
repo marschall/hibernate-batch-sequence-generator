@@ -2,6 +2,7 @@ package com.github.marschall.hibernate.batchsequencegenerator.configurations;
 
 import javax.sql.DataSource;
 
+import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
@@ -14,6 +15,11 @@ public class Db2Configuration {
 
   @Bean
   public DataSource dataSource() {
+    try {
+      Class.forName("com.ibm.db2.jcc.DB2Driver");
+    } catch (ClassNotFoundException e) {
+      throw new BeanCreationException("could not register driver", e);
+    }
     SingleConnectionDataSource dataSource = new SingleConnectionDataSource();
     dataSource.setSuppressClose(true);
     dataSource.setUrl("jdbc:db2://localhost:50000/jdbc");
