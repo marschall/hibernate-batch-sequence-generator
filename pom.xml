@@ -63,7 +63,7 @@
         <configuration>
           <links>
             <link>https://docs.oracle.com/javase/8/docs/api/</link>
-            <link>https://docs.jboss.org/hibernate/orm/5.4/javadocs/</link>
+            <link>https://docs.jboss.org/hibernate/orm/5.5/javadocs/</link>
           </links>
         </configuration>
       </plugin>
