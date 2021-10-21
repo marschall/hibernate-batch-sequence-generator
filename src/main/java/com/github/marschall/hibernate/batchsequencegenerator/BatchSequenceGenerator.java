@@ -125,6 +125,7 @@ import org.hibernate.type.Type;
  *  <li>Oracle</li>
  *  <li>H2</li>
  *  <li>HSQLDB</li>
+ *  <li>MariaDB</li>
  *  <li>Postgres</li>
  *  <li>SQL Sever</li>
  * </ul>
