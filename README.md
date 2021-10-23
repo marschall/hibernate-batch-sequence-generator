@@ -3,6 +3,7 @@ Hibernate Batch Sequence Generator [![Maven Central](https://maven-badges.heroku
 
 A batch sequence generator for Hibernate that uses [recursive queries](https://en.wikipedia.org/wiki/Hierarchical_and_recursive_queries_in_SQL) to preallocate multiple values in a single database access.
 
+The code is also present in [Hibernate Types](https://github.com/vladmihalcea/hibernate-types) starting with version 2.13.1.
 
 ```xml
 <dependency>
@@ -11,14 +12,13 @@ A batch sequence generator for Hibernate that uses [recursive queries](https://e
   <version>1.1.0</version>
 </dependency>
 ```
-
-This sequence generator combines the advantages of several existing sequence generators and avoids their disadvantages
+This sequence generator combines the advantages of several existing sequence generators and avoids their disadvantages:
 
 - [hi/lo](https://vladmihalcea.com/2014/06/23/the-hilo-algorithm/)
   - all database access has to be aware of it
-  - there is no clear relationship from the current sequence value to the column value
+  - there is no clear relationship between the current sequence value and the column value
 - `pooled` and `pooledlo`
-  - `INCREMENT BY` value has to be set on the database sequence
+  - `INCREMENT BY` has to be set on the database sequence
   - direct use of the sequence can cause a lot of identifier waste
   - the pool size and the `INCREMENT BY` value need to match
 - `IDENTITY`
@@ -26,7 +26,7 @@ This sequence generator combines the advantages of several existing sequence gen
 - `TABLE`
   - has bad write performance
 
-The limitations of this sequence generator are
+The limitations of this sequence generator are:
 
 - limited database dialect support (see below)
 - if you're using hbm2ddl then the `CACHE` value on the sequence is not set
@@ -91,7 +91,7 @@ For the best possible performance the `CACHE` value of the database sequence sho
 Hibernate Versions
 ------------------
 
-The project has been developed and tested against Hibernate 5.4.
+The project has been developed and tested against Hibernate 5.6.
 
 Dependencies
 ------------
@@ -101,7 +101,8 @@ The project has no dependencies other than Hibernate.
 Further Reading
 ---------------
 
-- https://vladmihalcea.com/2015/03/18/how-to-batch-insert-and-update-statements-with-hibernate/
+- https://vladmihalcea.com/hibernate-batch-sequence-generator/
+- https://vladmihalcea.com/how-to-batch-insert-and-update-statements-with-hibernate/
 - https://docs.jboss.org/hibernate/orm/5.0/manual/en-US/html/ch03.html#configuration-optional-properties
-- https://vladmihalcea.com/2014/07/08/hibernate-identity-sequence-and-table-sequence-generator/
+- https://vladmihalcea.com/hibernate-identity-sequence-and-table-sequence-generator/
 - https://dzone.com/articles/how-batch-insert-and-update
