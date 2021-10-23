@@ -25,6 +25,7 @@ import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.id.BulkInsertionCapableIdentifierGenerator;
 import org.hibernate.id.Configurable;
 import org.hibernate.id.IdentifierGenerationException;
+import org.hibernate.id.IdentifierGenerator;
 import org.hibernate.id.PersistentIdentifierGenerator;
 import org.hibernate.id.enhanced.DatabaseStructure;
 import org.hibernate.id.enhanced.SequenceStructure;
@@ -170,12 +171,12 @@ public class BatchSequenceGenerator implements BulkInsertionCapableIdentifierGen
     this.identifierExtractor = IdentifierExtractor.getIdentifierExtractor(type.getReturnedClass());
     this.identifierPool = IdentifierPool.empty();
 
-    this.databaseStructure = this.buildDatabaseStructure(type, sequenceName, jdbcEnvironment);
+    this.databaseStructure = this.buildDatabaseStructure(type, sequenceName, jdbcEnvironment, params);
   }
 
   private static String buildSelect(String sequenceName, Dialect dialect) {
-    if (dialect instanceof org.hibernate.dialect.Oracle8iDialect) {
-      return "SELECT " + dialect.getSelectSequenceNextValString(sequenceName) + " FROM dual CONNECT BY rownum <= ?";
+    if (dialect instanceof org.hibernate.dialect.OracleDialect) {
+      return "SELECT " + dialect.getSequenceSupport().getSelectSequenceNextValString(sequenceName) + " FROM dual CONNECT BY rownum <= ?";
     }
     if (dialect instanceof org.hibernate.dialect.SQLServerDialect) {
       // No RECURSIVE
@@ -184,7 +185,7 @@ public class BatchSequenceGenerator implements BulkInsertionCapableIdentifierGen
           + "UNION ALL "
           +"SELECT n + 1 as n FROM t WHERE n < ?) "
           // sequence generation outside of WITH
-          + "SELECT " + dialect.getSelectSequenceNextValString(sequenceName) + " as n FROM t";
+          + "SELECT " + dialect.getSequenceSupport().getSelectSequenceNextValString(sequenceName) + " as n FROM t";
     }
     if (dialect instanceof org.hibernate.dialect.DB2Dialect) {
       // No RECURSIVE
@@ -195,35 +196,40 @@ public class BatchSequenceGenerator implements BulkInsertionCapableIdentifierGen
           + "UNION ALL "
           +"SELECT n + 1 as n FROM t WHERE n < ?) "
       // sequence generation outside of WITH
-          + "SELECT " + dialect.getSelectSequenceNextValString(sequenceName) + " as n FROM t";
+          + "SELECT " + dialect.getSequenceSupport().getSelectSequenceNextValString(sequenceName) + " as n FROM t";
     }
     if (dialect instanceof org.hibernate.dialect.HSQLDialect) {
       // https://stackoverflow.com/questions/44472280/cte-based-sequence-generation-with-hsqldb/52329862
-      return "SELECT " + dialect.getSelectSequenceNextValString(sequenceName) + " FROM UNNEST(SEQUENCE_ARRAY(1, ?, 1))";
+      return "SELECT " + dialect.getSequenceSupport().getSelectSequenceNextValString(sequenceName) + " FROM UNNEST(SEQUENCE_ARRAY(1, ?, 1))";
     }
-    if (dialect instanceof org.hibernate.dialect.FirebirdDialect) {
-      return "WITH RECURSIVE t(n, level_num) AS ("
-              + "SELECT " + dialect.getSelectSequenceNextValString(sequenceName) + " as n, 1 as level_num "
-              // difference
-              + " FROM rdb$database "
-              + "UNION ALL "
-              + "SELECT " + dialect.getSelectSequenceNextValString(sequenceName) + " as n, level_num + 1 as level_num "
-              + " FROM t "
-              + " WHERE level_num < ?) "
-              + "SELECT n FROM t";
-    }
+//    if (dialect instanceof org.hibernate.dialect.FirebirdDialect) {
+//      return "WITH RECURSIVE t(n, level_num) AS ("
+//              + "SELECT " + dialect.getSequenceSupport().getSelectSequenceNextValString(sequenceName) + " as n, 1 as level_num "
+//              // difference
+//              + " FROM rdb$database "
+//              + "UNION ALL "
+//              + "SELECT " + dialect.getSequenceSupport().getSelectSequenceNextValString(sequenceName) + " as n, level_num + 1 as level_num "
+//              + " FROM t "
+//              + " WHERE level_num < ?) "
+//              + "SELECT n FROM t";
+//    }
     return "WITH RECURSIVE t(n, level_num) AS ("
-            + "SELECT " + dialect.getSelectSequenceNextValString(sequenceName) + " as n, 1 as level_num "
+            + "SELECT " + dialect.getSequenceSupport().getSelectSequenceNextValString(sequenceName) + " as n, 1 as level_num "
             + "UNION ALL "
-            + "SELECT " + dialect.getSelectSequenceNextValString(sequenceName) + " as n, level_num + 1 as level_num "
+            + "SELECT " + dialect.getSequenceSupport().getSelectSequenceNextValString(sequenceName) + " as n, level_num + 1 as level_num "
             + " FROM t "
             + " WHERE level_num < ?) "
             + "SELECT n FROM t";
   }
 
-  private SequenceStructure buildDatabaseStructure(Type type, String sequenceName, JdbcEnvironment jdbcEnvironment) {
-    return new SequenceStructure(jdbcEnvironment,
+  private SequenceStructure buildDatabaseStructure(Type type, String sequenceName, JdbcEnvironment jdbcEnvironment, Properties params) {
+    return new SequenceStructure(jdbcEnvironment, this.determineContributor(params),
             QualifiedNameParser.INSTANCE.parse(sequenceName), 1, 1, type.getReturnedClass());
+  }
+
+  private String determineContributor(Properties params) {
+    final String contributor = params.getProperty( IdentifierGenerator.CONTRIBUTOR_NAME );
+    return contributor == null ? "orm" : contributor;
   }
 
   private  static String determineSequenceName(Properties params) {
@@ -249,7 +255,7 @@ public class BatchSequenceGenerator implements BulkInsertionCapableIdentifierGen
 
   @Override
   public String determineBulkInsertionIdentifierGenerationSelectFragment(Dialect dialect) {
-    return dialect.getSelectSequenceNextValString(this.getSequenceName());
+    return dialect.getSequenceSupport().getSelectSequenceNextValString(this.getSequenceName());
   }
 
   @Override

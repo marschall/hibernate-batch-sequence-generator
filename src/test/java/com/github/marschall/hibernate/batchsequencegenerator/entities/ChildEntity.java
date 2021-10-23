@@ -3,13 +3,13 @@ package com.github.marschall.hibernate.batchsequencegenerator.entities;
 import static com.github.marschall.hibernate.batchsequencegenerator.BatchSequenceGenerator.FETCH_SIZE_PARAM;
 import static com.github.marschall.hibernate.batchsequencegenerator.BatchSequenceGenerator.SEQUENCE_PARAM;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
 
 @Entity(name = "CHILD_ENTITY")
 public class ChildEntity {
@@ -30,7 +30,7 @@ public class ChildEntity {
   private Long parentId;
 
   public Long getChildId() {
-    return childId;
+    return this.childId;
   }
 
   public void setChildId(Long childId) {
@@ -38,7 +38,7 @@ public class ChildEntity {
   }
 
   public Long getParentId() {
-    return parentId;
+    return this.parentId;
   }
 
   public void setParentId(Long parentId) {
