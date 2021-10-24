@@ -12,6 +12,9 @@ The code is also present in [Hibernate Types](https://github.com/vladmihalcea/hi
   <version>1.1.0</version>
 </dependency>
 ```
+
+Versions 2.x support Hibernate 6.
+
 This sequence generator combines the advantages of several existing sequence generators and avoids their disadvantages:
 
 - [hi/lo](https://vladmihalcea.com/2014/06/23/the-hilo-algorithm/)
