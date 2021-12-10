@@ -3,6 +3,7 @@ package com.github.marschall.hibernate.batchsequencegenerator;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.RoundingMode;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -379,7 +380,7 @@ public class BatchSequenceGenerator implements BulkInsertionCapableIdentifierGen
         if (resultSet.wasNull()) {
           throw new IdentifierGenerationException("sequence returned null");
         }
-        return bigDecimal.setScale(0, BigDecimal.ROUND_UNNECESSARY).toBigInteger();
+        return bigDecimal.setScale(0, RoundingMode.UNNECESSARY).toBigInteger();
       }
     },
 
