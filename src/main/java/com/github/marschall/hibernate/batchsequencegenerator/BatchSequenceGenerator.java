@@ -202,17 +202,17 @@ public class BatchSequenceGenerator implements BulkInsertionCapableIdentifierGen
       // https://stackoverflow.com/questions/44472280/cte-based-sequence-generation-with-hsqldb/52329862
       return "SELECT " + dialect.getSequenceSupport().getSelectSequenceNextValString(sequenceName) + " FROM UNNEST(SEQUENCE_ARRAY(1, ?, 1))";
     }
-//    if (dialect instanceof org.hibernate.dialect.FirebirdDialect) {
-//      return "WITH RECURSIVE t(n, level_num) AS ("
-//              + "SELECT " + dialect.getSequenceSupport().getSelectSequenceNextValString(sequenceName) + " as n, 1 as level_num "
-//              // difference
-//              + " FROM rdb$database "
-//              + "UNION ALL "
-//              + "SELECT " + dialect.getSequenceSupport().getSelectSequenceNextValString(sequenceName) + " as n, level_num + 1 as level_num "
-//              + " FROM t "
-//              + " WHERE level_num < ?) "
-//              + "SELECT n FROM t";
-//    }
+    if (dialect instanceof org.hibernate.community.dialect.FirebirdDialect) {
+      return "WITH RECURSIVE t(n, level_num) AS ("
+              + "SELECT " + dialect.getSequenceSupport().getSelectSequenceNextValString(sequenceName) + " as n, 1 as level_num "
+              // difference
+              + " FROM rdb$database "
+              + "UNION ALL "
+              + "SELECT " + dialect.getSequenceSupport().getSelectSequenceNextValString(sequenceName) + " as n, level_num + 1 as level_num "
+              + " FROM t "
+              + " WHERE level_num < ?) "
+              + "SELECT n FROM t";
+    }
     return "WITH RECURSIVE t(n, level_num) AS ("
             + "SELECT " + dialect.getSequenceSupport().getSelectSequenceNextValString(sequenceName) + " as n, 1 as level_num "
             + "UNION ALL "

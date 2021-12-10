@@ -141,7 +141,7 @@
     <class>com.github.marschall.hibernate.batchsequencegenerators.entities.ChildEntity</class>
 
     <properties>
-      <property name="hibernate.dialect" value="org.hibernate.dialect.FirebirdDialect" />
+      <property name="hibernate.dialect" value="org.hibernate.community.dialect.FirebirdDialect" />
     </properties>
   </persistence-unit>
 
@@ -152,7 +152,7 @@
     <class>com.github.marschall.hibernate.batchsequencegenerators.entities.ChildEntity</class>
 
     <properties>
-      <property name="hibernate.dialect" value="org.hibernate.dialect.FirebirdDialect" />
+      <property name="hibernate.dialect" value="org.hibernate.community.dialect.FirebirdDialect" />
       <property name="hibernate.jdbc.batch_size" value="50" />
       <property name="hibernate.order_inserts" value="true" />
       <property name="hibernate.order_updates" value="true" />
