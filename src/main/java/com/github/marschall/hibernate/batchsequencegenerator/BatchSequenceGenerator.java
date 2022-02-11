@@ -19,16 +19,18 @@ import org.hibernate.HibernateException;
 import org.hibernate.MappingException;
 import org.hibernate.boot.model.relational.Database;
 import org.hibernate.boot.model.relational.QualifiedNameParser;
+import org.hibernate.boot.model.relational.SqlStringGenerationContext;
 import org.hibernate.dialect.Dialect;
 import org.hibernate.engine.jdbc.env.spi.JdbcEnvironment;
 import org.hibernate.engine.jdbc.spi.JdbcCoordinator;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.id.BulkInsertionCapableIdentifierGenerator;
-import org.hibernate.id.Configurable;
 import org.hibernate.id.IdentifierGenerationException;
 import org.hibernate.id.IdentifierGenerator;
 import org.hibernate.id.PersistentIdentifierGenerator;
 import org.hibernate.id.enhanced.DatabaseStructure;
+import org.hibernate.id.enhanced.NoopOptimizer;
+import org.hibernate.id.enhanced.Optimizer;
 import org.hibernate.id.enhanced.SequenceStructure;
 import org.hibernate.internal.util.config.ConfigurationHelper;
 import org.hibernate.service.ServiceRegistry;
@@ -134,7 +136,7 @@ import org.hibernate.type.Type;
  * In theory any RDBMS that supports {@code WITH RECURSIVE} and
  * sequences is supported.
  */
-public class BatchSequenceGenerator implements BulkInsertionCapableIdentifierGenerator, PersistentIdentifierGenerator, Configurable {
+public class BatchSequenceGenerator implements BulkInsertionCapableIdentifierGenerator, PersistentIdentifierGenerator {
 
   /**
    * Indicates the name of the sequence to use, mandatory.
@@ -158,10 +160,10 @@ public class BatchSequenceGenerator implements BulkInsertionCapableIdentifierGen
   private IdentifierPool identifierPool;
   private IdentifierExtractor identifierExtractor;
   private DatabaseStructure databaseStructure;
+  private NoopOptimizer optimizer;
 
   @Override
-  public void configure(Type type, Properties params, ServiceRegistry serviceRegistry)
-          throws MappingException {
+  public void configure(Type type, Properties params, ServiceRegistry serviceRegistry) {
 
     JdbcEnvironment jdbcEnvironment = serviceRegistry.getService(JdbcEnvironment.class);
     Dialect dialect = jdbcEnvironment.getDialect();
@@ -169,8 +171,10 @@ public class BatchSequenceGenerator implements BulkInsertionCapableIdentifierGen
     this.fetchSize = determineFetchSize(params);
 
     this.select = buildSelect(sequenceName, dialect);
-    this.identifierExtractor = IdentifierExtractor.getIdentifierExtractor(type.getReturnedClass());
+    Class<?> returnedClass = type.getReturnedClass();
+    this.identifierExtractor = IdentifierExtractor.getIdentifierExtractor(returnedClass);
     this.identifierPool = IdentifierPool.empty();
+    this.optimizer = new NoopOptimizer(returnedClass, 1);
 
     this.databaseStructure = this.buildDatabaseStructure(type, sequenceName, jdbcEnvironment, params);
   }
@@ -255,12 +259,17 @@ public class BatchSequenceGenerator implements BulkInsertionCapableIdentifierGen
   }
 
   @Override
-  public String determineBulkInsertionIdentifierGenerationSelectFragment(Dialect dialect) {
-    return dialect.getSequenceSupport().getSelectSequenceNextValString(this.getSequenceName());
+  public boolean supportsJdbcBatchInserts() {
+    return true;
   }
 
   @Override
-  public Serializable generate(SharedSessionContractImplementor session, Object object) throws HibernateException {
+  public String determineBulkInsertionIdentifierGenerationSelectFragment(SqlStringGenerationContext context) {
+    return context.getDialect().getSequenceSupport().getSelectSequenceNextValString(this.getSequenceName());
+  }
+
+  @Override
+  public Serializable generate(SharedSessionContractImplementor session, Object object) {
     this.lock.lock();
     try {
       if (this.identifierPool.isEmpty()) {
@@ -273,24 +282,12 @@ public class BatchSequenceGenerator implements BulkInsertionCapableIdentifierGen
   }
 
   @Override
-  public Object generatorKey() {
-    return this.getSequenceName();
+  public Optimizer getOptimizer() {
+    return this.optimizer;
   }
 
   private String getSequenceName() {
-    return this.databaseStructure.getName();
-  }
-
-  @Override
-  @Deprecated
-  public String[] sqlCreateStrings(Dialect dialect) {
-    return this.databaseStructure.sqlCreateStrings(dialect);
-  }
-
-  @Override
-  @Deprecated
-  public String[] sqlDropStrings(Dialect dialect) {
-    return this.databaseStructure.sqlDropStrings(dialect);
+    return this.databaseStructure.getPhysicalName().getObjectName().getCanonicalName();
   }
 
   @Override
@@ -355,55 +352,55 @@ public class BatchSequenceGenerator implements BulkInsertionCapableIdentifierGen
    *
    * @see org.hibernate.id.IntegralDataTypeHolder
    */
-  enum IdentifierExtractor {
+  @FunctionalInterface
+  interface IdentifierExtractor {
 
-    INTEGER_IDENTIFIER_EXTRACTOR {
-      @Override
-      Serializable extractIdentifier(ResultSet resultSet) throws SQLException {
-        int intValue = resultSet.getInt(1);
-        if (resultSet.wasNull()) {
-          throw new IdentifierGenerationException("sequence returned null");
-        }
-        return intValue;
+    IdentifierExtractor SHORT_IDENTIFIER_EXTRACTOR = (ResultSet resultSet) -> {
+      short shortValue = resultSet.getShort(1);
+      if (resultSet.wasNull()) {
+        throw new IdentifierGenerationException("sequence returned null");
       }
-    },
-
-    LONG_IDENTIFIER_EXTRACTOR {
-      @Override
-      Serializable extractIdentifier(ResultSet resultSet) throws SQLException {
-        long longValue = resultSet.getLong(1);
-        if (resultSet.wasNull()) {
-          throw new IdentifierGenerationException("sequence returned null");
-        }
-        return longValue;
-      }
-    },
-
-    BIG_INTEGER_IDENTIFIER_EXTRACTOR {
-      @Override
-      Serializable extractIdentifier(ResultSet resultSet) throws SQLException {
-        BigDecimal bigDecimal = resultSet.getBigDecimal(1);
-        if (resultSet.wasNull()) {
-          throw new IdentifierGenerationException("sequence returned null");
-        }
-        return bigDecimal.setScale(0, RoundingMode.UNNECESSARY).toBigInteger();
-      }
-    },
-
-    BIG_DECIMAL_IDENTIFIER_EXTRACTOR {
-      @Override
-      Serializable extractIdentifier(ResultSet resultSet) throws SQLException {
-        BigDecimal bigDecimal = resultSet.getBigDecimal(1);
-        if (resultSet.wasNull()) {
-          throw new IdentifierGenerationException("sequence returned null");
-        }
-        return bigDecimal;
-      }
+      return shortValue;
     };
 
-    abstract Serializable extractIdentifier(ResultSet resultSet) throws SQLException;
+    IdentifierExtractor INTEGER_IDENTIFIER_EXTRACTOR = (ResultSet resultSet) -> {
+      int intValue = resultSet.getInt(1);
+      if (resultSet.wasNull()) {
+        throw new IdentifierGenerationException("sequence returned null");
+      }
+      return intValue;
+    };
+
+    IdentifierExtractor LONG_IDENTIFIER_EXTRACTOR = (ResultSet resultSet) -> {
+      long longValue = resultSet.getLong(1);
+      if (resultSet.wasNull()) {
+        throw new IdentifierGenerationException("sequence returned null");
+      }
+      return longValue;
+    };
+
+    IdentifierExtractor BIG_INTEGER_IDENTIFIER_EXTRACTOR  = (ResultSet resultSet) -> {
+      BigDecimal bigDecimal = resultSet.getBigDecimal(1);
+      if (resultSet.wasNull()) {
+        throw new IdentifierGenerationException("sequence returned null");
+      }
+      return bigDecimal.setScale(0, RoundingMode.UNNECESSARY).toBigInteger();
+    };
+
+    IdentifierExtractor BIG_DECIMAL_IDENTIFIER_EXTRACTOR  = (ResultSet resultSet) -> {
+      BigDecimal bigDecimal = resultSet.getBigDecimal(1);
+      if (resultSet.wasNull()) {
+        throw new IdentifierGenerationException("sequence returned null");
+      }
+      return bigDecimal;
+    };
+
+    Serializable extractIdentifier(ResultSet resultSet) throws SQLException;
 
     static IdentifierExtractor getIdentifierExtractor(Class<?> integralType) {
+      if ((integralType == Short.class) || (integralType == short.class)) {
+        return SHORT_IDENTIFIER_EXTRACTOR;
+      }
       if ((integralType == Integer.class) || (integralType == int.class)) {
         return INTEGER_IDENTIFIER_EXTRACTOR;
       }
