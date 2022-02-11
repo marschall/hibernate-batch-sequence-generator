@@ -19,12 +19,12 @@ import org.hibernate.HibernateException;
 import org.hibernate.MappingException;
 import org.hibernate.boot.model.relational.Database;
 import org.hibernate.boot.model.relational.QualifiedNameParser;
+import org.hibernate.boot.model.relational.SqlStringGenerationContext;
 import org.hibernate.dialect.Dialect;
 import org.hibernate.engine.jdbc.env.spi.JdbcEnvironment;
 import org.hibernate.engine.jdbc.spi.JdbcCoordinator;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.id.BulkInsertionCapableIdentifierGenerator;
-import org.hibernate.id.Configurable;
 import org.hibernate.id.IdentifierGenerationException;
 import org.hibernate.id.PersistentIdentifierGenerator;
 import org.hibernate.id.enhanced.DatabaseStructure;
@@ -133,7 +133,7 @@ import org.hibernate.type.Type;
  * In theory any RDBMS that supports {@code WITH RECURSIVE} and
  * sequences is supported.
  */
-public class BatchSequenceGenerator implements BulkInsertionCapableIdentifierGenerator, PersistentIdentifierGenerator, Configurable {
+public class BatchSequenceGenerator implements BulkInsertionCapableIdentifierGenerator, PersistentIdentifierGenerator {
 
   /**
    * Indicates the name of the sequence to use, mandatory.
@@ -249,8 +249,8 @@ public class BatchSequenceGenerator implements BulkInsertionCapableIdentifierGen
   }
 
   @Override
-  public String determineBulkInsertionIdentifierGenerationSelectFragment(Dialect dialect) {
-    return dialect.getSelectSequenceNextValString(this.getSequenceName());
+  public String determineBulkInsertionIdentifierGenerationSelectFragment(SqlStringGenerationContext context) {
+    return context.getDialect().getSelectSequenceNextValString(this.getSequenceName());
   }
 
   @Override
@@ -266,25 +266,8 @@ public class BatchSequenceGenerator implements BulkInsertionCapableIdentifierGen
     }
   }
 
-  @Override
-  public Object generatorKey() {
-    return this.getSequenceName();
-  }
-
   private String getSequenceName() {
-    return this.databaseStructure.getName();
-  }
-
-  @Override
-  @Deprecated
-  public String[] sqlCreateStrings(Dialect dialect) {
-    return this.databaseStructure.sqlCreateStrings(dialect);
-  }
-
-  @Override
-  @Deprecated
-  public String[] sqlDropStrings(Dialect dialect) {
-    return this.databaseStructure.sqlDropStrings(dialect);
+    return this.databaseStructure.getPhysicalName().getObjectName().getCanonicalName();
   }
 
   @Override
