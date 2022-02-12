@@ -9,7 +9,7 @@ The code is also present in [Hibernate Types](https://github.com/vladmihalcea/hi
 <dependency>
   <groupId>com.github.marschall</groupId>
   <artifactId>hibernate-batch-sequence-generator</artifactId>
-  <version>1.1.0</version>
+  <version>1.2.0</version>
 </dependency>
 ```
 
