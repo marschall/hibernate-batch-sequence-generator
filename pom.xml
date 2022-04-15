@@ -4,7 +4,7 @@
 
   <groupId>com.github.marschall</groupId>
   <artifactId>hibernate-batch-sequence-generator</artifactId>
-  <version>1.2.1</version>
+  <version>1.2.2-SNAPSHOT</version>
   <inceptionYear>2017</inceptionYear>
   <url>https://github.com/marschall/hibernate-batch-sequence-generator</url>
   <name>Hibernate Batch Sequence Generator</name>
@@ -35,7 +35,7 @@
     <connection>scm:git:git@github.com:marschall/hibernate-batch-sequence-generator.git</connection>
     <developerConnection>scm:git:git@github.com:marschall/hibernate-batch-sequence-generator.git</developerConnection>
     <url>${project.url}</url>
-    <tag>1.2.1</tag>
+    <tag>HEAD</tag>
   </scm>
   
   <issueManagement>
