@@ -9,11 +9,15 @@ The code is also present in [Hibernate Types](https://github.com/vladmihalcea/hi
 <dependency>
   <groupId>com.github.marschall</groupId>
   <artifactId>hibernate-batch-sequence-generator</artifactId>
-  <version>1.2.1</version>
+  <version>2.1.0</version>
 </dependency>
 ```
 
-Versions 2.x support Hibernate 6.
+Versions 2.1.x support Hibernate 6.4.
+
+Versions 2.0.x support Hibernate 6.x.
+
+Versions 1.x support Hibernate 5.6.
 
 This sequence generator combines the advantages of several existing sequence generators and avoids their disadvantages:
 
