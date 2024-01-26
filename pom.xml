@@ -97,7 +97,17 @@
             <link>https://docs.oracle.com/javase/11/docs/api/</link>
             <link>https://docs.jboss.org/hibernate/orm/6.4/javadocs/</link>
           </links>
+          <notimestamp>true</notimestamp>
         </configuration>
+        <executions>
+          <execution>
+            <id>attach-javadocs</id>
+            <phase>package</phase>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
       <plugin>
         <groupId>io.smallrye</groupId>
@@ -402,6 +412,7 @@
     <project.reporting.outputEncoding>utf-8</project.reporting.outputEncoding>
     <project.build.sourceEncoding>utf-8</project.build.sourceEncoding>
     <hibernate.version>6.4.2.Final</hibernate.version>
+    <project.build.outputTimestamp>2024-01-02T20:11:00Z</project.build.outputTimestamp>
   </properties>
 
 </project>
