@@ -7,4 +7,4 @@ docker run --name jdbc-oracle-23 \
  -p 1521:1521 -p 5500:5500 \
  --shm-size=1g \
  -v ${DIRECTORY}/oracle:/docker-entrypoint-initdb.d/setup \
- -d oracle/database:23.3.0-free
+ -d oracle/database:23.4.0-free
