@@ -29,6 +29,8 @@ public class HibernateConfiguration {
     bean.setPersistenceUnitName(this.environment.getProperty(PERSISTENCE_UNIT_NAME));
     bean.setJpaDialect(this.jpaDialect());
     bean.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
+//    Map<String, Object> jpaProperties = Map.of(AvailableSettings.PHYSICAL_NAMING_STRATEGY, new CamelCaseToUnderscoresNamingStrategy());
+//    bean.setJpaPropertyMap(jpaProperties);
     bean.setDataSource(this.dataSource);
     return bean;
   }

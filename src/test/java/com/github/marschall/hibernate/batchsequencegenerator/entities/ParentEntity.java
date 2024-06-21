@@ -1,17 +1,12 @@
 package com.github.marschall.hibernate.batchsequencegenerator.entities;
 
-import static com.github.marschall.hibernate.batchsequencegenerator.BatchSequenceGenerator.FETCH_SIZE_PARAM;
-import static com.github.marschall.hibernate.batchsequencegenerator.BatchSequenceGenerator.SEQUENCE_PARAM;
-
 import java.util.HashSet;
 import java.util.Set;
 
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Parameter;
+import com.github.marschall.hibernate.batchsequencegenerator.BatchSequence;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
@@ -20,14 +15,7 @@ import jakarta.persistence.OneToMany;
 public class ParentEntity {
 
   @Id
-  @GenericGenerator(
-          name = "parent_id_generator",
-          strategy = "com.github.marschall.hibernate.batchsequencegenerator.BatchSequenceGenerator",
-          parameters = {
-              @Parameter(name = SEQUENCE_PARAM, value = "SEQ_PARENT_ID"),
-              @Parameter(name = FETCH_SIZE_PARAM, value = "50")
-          })
-  @GeneratedValue(generator = "parent_id_generator")
+  @BatchSequence(name = "SEQ_PARENT_ID", fetchSize = 50)
   @Column(name = "PARENT_ID")
   private Long parentId;
 
