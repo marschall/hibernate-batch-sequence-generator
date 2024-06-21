@@ -9,9 +9,11 @@ The code is also present in [Hibernate Types](https://github.com/vladmihalcea/hi
 <dependency>
   <groupId>com.github.marschall</groupId>
   <artifactId>hibernate-batch-sequence-generator</artifactId>
-  <version>2.1.1</version>
+  <version>2.2.0</version>
 </dependency>
 ```
+
+Versions 2.2.x support Hibernate 6.5.
 
 Versions 2.1.x support Hibernate 6.4.
 
@@ -45,15 +47,7 @@ You can use this sequence generator like this
 
 ```java
 @Id
-@GenericGenerator(
-        name = "some_column_name_id_generator",
-        strategy = "com.github.marschall.hibernate.batchsequencegenerator.BatchSequenceGenerator",
-        parameters = {
-            @Parameter(name = "sequence", value = "SOME_SEQUENCE_NAME"),
-            @Parameter(name = "fetch_size", value = "SOME_FETCH_SIZE_VALUE")
-        })
-@GeneratedValue(generator = "some_column_name_id_generator")
-@Column(name = "SOME_COLUMN_NAME")
+@BatchSequence(name = "SOME_SEQUENCE_NAME", fetch_size = SOME_FETCH_SIZE_VALUE)
 private Long someColumnName;
 ```
 
@@ -63,11 +57,7 @@ You need to configure the following things
 <dt>SOME_SEQUENCE_NAME</dt>
 <dd>the SQL name of the sequence from which the values should be fetched</dd>
 <dt>SOME_FETCH_SIZE_VALUE</dt>
-<dd>integer, how many values should be fetched at once, this should be equal to the <code>CACHE</code> value of the sequence</dd>
-<dt>SOME_COLUMN_NAME</dt>
-<dd>the SQL name of the column for which the value should be generated</dd>
-<dt>some_column_name_id_generator</dt>
-<dd>unique if of the generator</dd>
+<dd>integer, how many values should be fetched at once, this should be equal to the <code>CACHE</code> value of the sequence, optional, default value is 10</dd>
 </dl>
 
 
@@ -98,7 +88,7 @@ For the best possible performance the `CACHE` value of the database sequence sho
 Hibernate Versions
 ------------------
 
-The project has been developed and tested against Hibernate 5.6.
+The project has been developed and tested against Hibernate 6.5.
 
 Dependencies
 ------------
