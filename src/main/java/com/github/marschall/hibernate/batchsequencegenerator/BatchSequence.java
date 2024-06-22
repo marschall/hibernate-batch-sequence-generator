@@ -14,7 +14,7 @@ import org.hibernate.annotations.IdGeneratorType;
  */
 @IdGeneratorType(BatchSequenceGenerator.class)
 @Retention(RUNTIME)
-@Target({ FIELD, METHOD })
+@Target({FIELD, METHOD})
 public @interface BatchSequence {
 
   /**
