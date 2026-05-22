@@ -18,6 +18,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.hibernate.HibernateException;
 import org.hibernate.MappingException;
 import org.hibernate.boot.model.relational.Database;
+import org.hibernate.boot.model.relational.ExportableProducer;
 import org.hibernate.boot.model.relational.QualifiedNameParser;
 import org.hibernate.boot.model.relational.SqlStringGenerationContext;
 import org.hibernate.dialect.Dialect;
@@ -27,10 +28,7 @@ import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.id.BulkInsertionCapableIdentifierGenerator;
 import org.hibernate.id.IdentifierGenerationException;
 import org.hibernate.id.IdentifierGenerator;
-import org.hibernate.id.PersistentIdentifierGenerator;
 import org.hibernate.id.enhanced.DatabaseStructure;
-import org.hibernate.id.enhanced.NoopOptimizer;
-import org.hibernate.id.enhanced.Optimizer;
 import org.hibernate.id.enhanced.SequenceStructure;
 import org.hibernate.internal.util.config.ConfigurationHelper;
 import org.hibernate.service.ServiceRegistry;
@@ -40,15 +38,12 @@ import org.hibernate.type.Type;
  * A sequence generator that uses a recursive query to fetch multiple
  * values from a sequence in a single database access.
  *
- * <h2>Parameters</h2>
- * The following configuration parameters are supported:
- * <dl>
- * <dt>{@value #SEQUENCE_PARAM}</dt>
- * <dd><strong>mandatory</strong>, name of the sequence to use</dd>
- * <dt>{@value #FETCH_SIZE_PARAM}</dt>
- * <dd>optional, how many sequence numbers should be fetched at a time,
- * default is {@value #DEFAULT_FETCH_SIZE}</dd>
- * </dl>
+ * <h2>Configuration</h2>
+ * <pre><code>
+ * &commat;Id
+ * &commat;BatchSequence(name = "SOME_SEQUENCE_NAME", fetch_size = SOME_FETCH_SIZE_VALUE)
+ * private Long someColumnName;
+ * </code></pre>
  *
  * <h2>SQL</h2>
  * Per default the generated SELECT will look something like this
@@ -136,16 +131,22 @@ import org.hibernate.type.Type;
  * In theory any RDBMS that supports {@code WITH RECURSIVE} and
  * sequences is supported.
  */
-public class BatchSequenceGenerator implements BulkInsertionCapableIdentifierGenerator, PersistentIdentifierGenerator {
+public final class BatchSequenceGenerator implements BulkInsertionCapableIdentifierGenerator, IdentifierGenerator, ExportableProducer {
 
   /**
    * Indicates the name of the sequence to use, mandatory.
+   * 
+   * @deprecated use {@link BatchSequence}
    */
+  @Deprecated
   public static final String SEQUENCE_PARAM = "sequence";
 
   /**
    * Indicates how many sequence values to fetch at once. The default value is {@link #DEFAULT_FETCH_SIZE}.
+   * 
+   * @deprecated use {@link BatchSequence}
    */
+  @Deprecated
   public static final String FETCH_SIZE_PARAM = "fetch_size";
 
   /**
@@ -154,27 +155,40 @@ public class BatchSequenceGenerator implements BulkInsertionCapableIdentifierGen
   public static final int DEFAULT_FETCH_SIZE = 10;
 
   private final Lock lock = new ReentrantLock();
+  private final BatchSequence annotation;
 
   private String select;
   private int fetchSize;
   private IdentifierPool identifierPool;
   private IdentifierExtractor identifierExtractor;
   private DatabaseStructure databaseStructure;
-  private NoopOptimizer optimizer;
+  
+  public BatchSequenceGenerator(BatchSequence annotation) {
+    this.annotation = annotation;
+  }
+  
+  public BatchSequenceGenerator() {
+    this.annotation = null;
+  }
 
   @Override
   public void configure(Type type, Properties params, ServiceRegistry serviceRegistry) {
 
     JdbcEnvironment jdbcEnvironment = serviceRegistry.getService(JdbcEnvironment.class);
     Dialect dialect = jdbcEnvironment.getDialect();
-    String sequenceName = determineSequenceName(params);
-    this.fetchSize = determineFetchSize(params);
+    String sequenceName;
+    if (this.annotation != null) {
+      sequenceName = this.annotation.name();
+      this.fetchSize = this.annotation.fetchSize();
+    } else {
+      sequenceName = determineSequenceName(params);
+      this.fetchSize = determineFetchSize(params);
+    }
 
     this.select = buildSelect(sequenceName, dialect);
     Class<?> returnedClass = type.getReturnedClass();
     this.identifierExtractor = IdentifierExtractor.getIdentifierExtractor(returnedClass);
     this.identifierPool = IdentifierPool.empty();
-    this.optimizer = new NoopOptimizer(returnedClass, 1);
 
     this.databaseStructure = this.buildDatabaseStructure(type, sequenceName, jdbcEnvironment, params);
   }
@@ -279,11 +293,6 @@ public class BatchSequenceGenerator implements BulkInsertionCapableIdentifierGen
     } finally {
       this.lock.unlock();
     }
-  }
-
-  @Override
-  public Optimizer getOptimizer() {
-    return this.optimizer;
   }
 
   private String getSequenceName() {

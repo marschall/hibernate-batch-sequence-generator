@@ -10,9 +10,6 @@
     <class>com.github.marschall.hibernate.batchsequencegenerators.entities.ParentEntity</class>
     <class>com.github.marschall.hibernate.batchsequencegenerators.entities.ChildEntity</class>
 
-    <properties>
-      <property name="hibernate.dialect" value="org.hibernate.dialect.DB2Dialect" />
-    </properties>
   </persistence-unit>
 
   <persistence-unit name="db2-batched">
@@ -22,7 +19,6 @@
     <class>com.github.marschall.hibernate.batchsequencegenerators.entities.ChildEntity</class>
 
     <properties>
-      <property name="hibernate.dialect" value="org.hibernate.dialect.DB2Dialect" />
       <property name="hibernate.jdbc.batch_size" value="50" />
       <property name="hibernate.order_inserts" value="true" />
       <property name="hibernate.order_updates" value="true" />
@@ -36,9 +32,6 @@
     <class>com.github.marschall.hibernate.batchsequencegenerators.entities.ParentEntity</class>
     <class>com.github.marschall.hibernate.batchsequencegenerators.entities.ChildEntity</class>
 
-    <properties>
-      <property name="hibernate.dialect" value="org.hibernate.dialect.HSQLDialect" />
-    </properties>
   </persistence-unit>
 
   <persistence-unit name="hsql-batched">
@@ -48,7 +41,6 @@
     <class>com.github.marschall.hibernate.batchsequencegenerators.entities.ChildEntity</class>
 
     <properties>
-      <property name="hibernate.dialect" value="org.hibernate.dialect.HSQLDialect" />
       <property name="hibernate.jdbc.batch_size" value="50" />
       <property name="hibernate.order_inserts" value="true" />
       <property name="hibernate.order_updates" value="true" />
@@ -62,9 +54,6 @@
     <class>com.github.marschall.hibernate.batchsequencegenerators.entities.ParentEntity</class>
     <class>com.github.marschall.hibernate.batchsequencegenerators.entities.ChildEntity</class>
 
-    <properties>
-      <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect" />
-    </properties>
   </persistence-unit>
 
   <persistence-unit name="h2-batched">
@@ -74,7 +63,6 @@
     <class>com.github.marschall.hibernate.batchsequencegenerators.entities.ChildEntity</class>
 
     <properties>
-      <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect" />
       <property name="hibernate.jdbc.batch_size" value="50" />
       <property name="hibernate.order_inserts" value="true" />
       <property name="hibernate.order_updates" value="true" />
@@ -88,9 +76,6 @@
     <class>com.github.marschall.hibernate.batchsequencegenerators.entities.ParentEntity</class>
     <class>com.github.marschall.hibernate.batchsequencegenerators.entities.ChildEntity</class>
 
-    <properties>
-      <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect" />
-    </properties>
   </persistence-unit>
 
   <persistence-unit name="postgres-batched">
@@ -100,7 +85,6 @@
     <class>com.github.marschall.hibernate.batchsequencegenerators.entities.ChildEntity</class>
 
     <properties>
-      <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect" />
       <property name="hibernate.jdbc.batch_size" value="50" />
       <property name="hibernate.order_inserts" value="true" />
       <property name="hibernate.order_updates" value="true" />
@@ -114,9 +98,6 @@
     <class>com.github.marschall.hibernate.batchsequencegenerators.entities.ParentEntity</class>
     <class>com.github.marschall.hibernate.batchsequencegenerators.entities.ChildEntity</class>
 
-    <properties>
-      <property name="hibernate.dialect" value="org.hibernate.dialect.SQLServerDialect" />
-    </properties>
   </persistence-unit>
 
   <persistence-unit name="sqlserver-batched">
@@ -126,7 +107,6 @@
     <class>com.github.marschall.hibernate.batchsequencegenerators.entities.ChildEntity</class>
 
     <properties>
-      <property name="hibernate.dialect" value="org.hibernate.dialect.SQLServerDialect" />
       <property name="hibernate.jdbc.batch_size" value="50" />
       <property name="hibernate.order_inserts" value="true" />
       <property name="hibernate.order_updates" value="true" />
@@ -140,9 +120,6 @@
     <class>com.github.marschall.hibernate.batchsequencegenerators.entities.ParentEntity</class>
     <class>com.github.marschall.hibernate.batchsequencegenerators.entities.ChildEntity</class>
 
-    <properties>
-      <property name="hibernate.dialect" value="org.hibernate.community.dialect.FirebirdDialect" />
-    </properties>
   </persistence-unit>
 
   <persistence-unit name="firebird-batched">
@@ -152,7 +129,6 @@
     <class>com.github.marschall.hibernate.batchsequencegenerators.entities.ChildEntity</class>
 
     <properties>
-      <property name="hibernate.dialect" value="org.hibernate.community.dialect.FirebirdDialect" />
       <property name="hibernate.jdbc.batch_size" value="50" />
       <property name="hibernate.order_inserts" value="true" />
       <property name="hibernate.order_updates" value="true" />
@@ -166,9 +142,6 @@
     <class>com.github.marschall.hibernate.batchsequencegenerators.entities.ParentEntity</class>
     <class>com.github.marschall.hibernate.batchsequencegenerators.entities.ChildEntity</class>
 
-    <properties>
-      <property name="hibernate.dialect" value="org.hibernate.dialect.MariaDBDialect" />
-    </properties>
   </persistence-unit>
 
   <persistence-unit name="maria-batched">
@@ -178,7 +151,6 @@
     <class>com.github.marschall.hibernate.batchsequencegenerators.entities.ChildEntity</class>
 
     <properties>
-      <property name="hibernate.dialect" value="org.hibernate.dialect.MariaDBDialect" />
       <property name="hibernate.jdbc.batch_size" value="50" />
       <property name="hibernate.order_inserts" value="true" />
       <property name="hibernate.order_updates" value="true" />
@@ -192,9 +164,6 @@
     <class>com.github.marschall.hibernate.batchsequencegenerators.entities.ParentEntity</class>
     <class>com.github.marschall.hibernate.batchsequencegenerators.entities.ChildEntity</class>
 
-    <properties>
-      <property name="hibernate.dialect" value="org.hibernate.dialect.OracleDialect" />
-    </properties>
   </persistence-unit>
 
   <persistence-unit name="oracle-batched">
@@ -204,7 +173,6 @@
     <class>com.github.marschall.hibernate.batchsequencegenerators.entities.ChildEntity</class>
 
     <properties>
-      <property name="hibernate.dialect" value="org.hibernate.dialect.OracleDialect" />
       <property name="hibernate.jdbc.batch_size" value="50" />
       <property name="hibernate.order_inserts" value="true" />
       <property name="hibernate.order_updates" value="true" />

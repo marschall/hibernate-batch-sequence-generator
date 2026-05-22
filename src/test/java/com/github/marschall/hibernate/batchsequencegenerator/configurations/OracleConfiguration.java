@@ -11,6 +11,8 @@ import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 import org.springframework.jdbc.datasource.init.DatabasePopulator;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 
+import oracle.jdbc.OracleConnection;
+
 @Configuration
 public class OracleConfiguration {
 
@@ -19,11 +21,11 @@ public class OracleConfiguration {
     oracle.jdbc.OracleDriver.isDebug();
     SingleConnectionDataSource dataSource = new SingleConnectionDataSource();
     dataSource.setSuppressClose(true);
-    dataSource.setUrl("jdbc:oracle:thin:@localhost:1521/ORCLPDB1");
+    dataSource.setUrl("jdbc:oracle:thin:@localhost:1521/FREEPDB1");
     dataSource.setUsername("jdbc");
     dataSource.setPassword("Cent-Quick-Space-Bath-8");
     Properties connectionProperties = new Properties();
-    connectionProperties.setProperty("oracle.net.disableOob", "true");
+    connectionProperties.setProperty(OracleConnection.CONNECTION_PROPERTY_THIN_NET_DISABLE_OUT_OF_BAND_BREAK, "true");
     dataSource.setConnectionProperties(connectionProperties);
     return dataSource;
   }

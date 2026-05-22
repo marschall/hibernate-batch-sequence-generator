@@ -38,15 +38,7 @@ You can use this sequence generator like this
 
 ```java
 @Id
-@GenericGenerator(
-        name = "some_column_name_id_generator",
-        strategy = "com.github.marschall.hibernate.batchsequencegenerator.BatchSequenceGenerator",
-        parameters = {
-            @Parameter(name = "sequence", value = "SOME_SEQUENCE_NAME"),
-            @Parameter(name = "fetch_size", value = "SOME_FETCH_SIZE_VALUE")
-        })
-@GeneratedValue(generator = "some_column_name_id_generator")
-@Column(name = "SOME_COLUMN_NAME")
+@BatchSequence(name = "SOME_SEQUENCE_NAME", fetch_size = SOME_FETCH_SIZE_VALUE)
 private Long someColumnName;
 ```
 
@@ -56,11 +48,7 @@ You need to configure the following things
 <dt>SOME_SEQUENCE_NAME</dt>
 <dd>the SQL name of the sequence from which the values should be fetched</dd>
 <dt>SOME_FETCH_SIZE_VALUE</dt>
-<dd>integer, how many values should be fetched at once, this should be equal to the <code>CACHE</code> value of the sequence</dd>
-<dt>SOME_COLUMN_NAME</dt>
-<dd>the SQL name of the column for which the value should be generated</dd>
-<dt>some_column_name_id_generator</dt>
-<dd>unique if of the generator</dd>
+<dd>integer, how many values should be fetched at once, this should be equal to the <code>CACHE</code> value of the sequence, optional, default value is 10</dd>
 </dl>
 
 

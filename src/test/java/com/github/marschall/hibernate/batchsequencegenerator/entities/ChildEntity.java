@@ -10,6 +10,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import com.github.marschall.hibernate.batchsequencegenerator.BatchSequenceGenerator;
 
 @Entity(name = "CHILD_ENTITY")
 public class ChildEntity {
@@ -17,7 +18,7 @@ public class ChildEntity {
   @Id
   @GenericGenerator(
           name = "child_id_generator",
-          strategy = "com.github.marschall.hibernate.batchsequencegenerator.BatchSequenceGenerator",
+          type = BatchSequenceGenerator.class,
           parameters = {
               @Parameter(name = SEQUENCE_PARAM, value = "SEQ_CHILD_ID"),
               @Parameter(name = FETCH_SIZE_PARAM, value = "50")
