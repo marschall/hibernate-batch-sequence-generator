@@ -242,7 +242,7 @@ public final class BatchSequenceGenerator implements BulkInsertionCapableIdentif
   }
 
   private SequenceStructure buildDatabaseStructure(Type type, String sequenceName, JdbcEnvironment jdbcEnvironment, Properties params) {
-    return new SequenceStructure(jdbcEnvironment, this.determineContributor(params),
+    return new SequenceStructure(this.determineContributor(params),
             QualifiedNameParser.INSTANCE.parse(sequenceName), 1, 1, type.getReturnedClass());
   }
 
@@ -269,11 +269,6 @@ public final class BatchSequenceGenerator implements BulkInsertionCapableIdentif
 
   @Override
   public boolean supportsBulkInsertionIdentifierGeneration() {
-    return true;
-  }
-
-  @Override
-  public boolean supportsJdbcBatchInserts() {
     return true;
   }
 

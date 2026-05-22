@@ -4,7 +4,7 @@
 
   <groupId>com.github.marschall</groupId>
   <artifactId>hibernate-batch-sequence-generator</artifactId>
-  <version>2.2.1-SNAPSHOT</version>
+  <version>3.0.0-SNAPSHOT</version>
   <inceptionYear>2017</inceptionYear>
   <url>https://github.com/marschall/hibernate-batch-sequence-generator</url>
   <name>Hibernate Batch Sequence Generator</name>
@@ -59,13 +59,6 @@
     </resources>
     <plugins>
       <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <release>11</release>
-          <testRelease>17</testRelease>
-        </configuration>
-      </plugin>
-      <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>flatten-maven-plugin</artifactId>
         <configuration>
@@ -94,8 +87,8 @@
         <artifactId>maven-javadoc-plugin</artifactId>
         <configuration>
           <links>
-            <link>https://docs.oracle.com/javase/11/docs/api/</link>
-            <link>https://docs.jboss.org/hibernate/orm/6.4/javadocs/</link>
+            <link>https://docs.oracle.com/javase/17/docs/api/</link>
+            <link>https://docs.jboss.org/hibernate/orm/7.3/javadocs/</link>
           </links>
           <notimestamp>true</notimestamp>
         </configuration>
@@ -213,14 +206,14 @@
       <dependency>
         <groupId>org.junit</groupId>
         <artifactId>junit-bom</artifactId>
-        <version>5.14.4</version>
+        <version>6.1.0</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-framework-bom</artifactId>
-        <version>6.2.18</version>
+        <version>7.0.7</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -411,8 +404,9 @@
   <properties>
     <project.reporting.outputEncoding>utf-8</project.reporting.outputEncoding>
     <project.build.sourceEncoding>utf-8</project.build.sourceEncoding>
-    <hibernate.version>6.6.50.Final</hibernate.version>
+    <hibernate.version>7.3.5.Final</hibernate.version>
     <project.build.outputTimestamp>2024-06-21T15:45:22Z</project.build.outputTimestamp>
+    <maven.compiler.release>17</maven.compiler.release>
   </properties>
 
 </project>
