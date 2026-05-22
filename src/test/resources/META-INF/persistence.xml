@@ -7,16 +7,16 @@
   <persistence-unit name="db2-default">
     <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
-    <class>com.github.marschall.hibernate.batchsequencegenerators.entities.ParentEntity</class>
-    <class>com.github.marschall.hibernate.batchsequencegenerators.entities.ChildEntity</class>
+    <class>com.github.marschall.hibernate.batchsequencegenerator.entities.ParentEntity</class>
+    <class>com.github.marschall.hibernate.batchsequencegenerator.entities.ChildEntity</class>
 
   </persistence-unit>
 
   <persistence-unit name="db2-batched">
     <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
-    <class>com.github.marschall.hibernate.batchsequencegenerators.entities.ParentEntity</class>
-    <class>com.github.marschall.hibernate.batchsequencegenerators.entities.ChildEntity</class>
+    <class>com.github.marschall.hibernate.batchsequencegenerator.entities.ParentEntity</class>
+    <class>com.github.marschall.hibernate.batchsequencegenerator.entities.ChildEntity</class>
 
     <properties>
       <property name="hibernate.jdbc.batch_size" value="50" />
@@ -29,16 +29,16 @@
   <persistence-unit name="hsql-default">
     <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
-    <class>com.github.marschall.hibernate.batchsequencegenerators.entities.ParentEntity</class>
-    <class>com.github.marschall.hibernate.batchsequencegenerators.entities.ChildEntity</class>
+    <class>com.github.marschall.hibernate.batchsequencegenerator.entities.ParentEntity</class>
+    <class>com.github.marschall.hibernate.batchsequencegenerator.entities.ChildEntity</class>
 
   </persistence-unit>
 
   <persistence-unit name="hsql-batched">
     <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
-    <class>com.github.marschall.hibernate.batchsequencegenerators.entities.ParentEntity</class>
-    <class>com.github.marschall.hibernate.batchsequencegenerators.entities.ChildEntity</class>
+    <class>com.github.marschall.hibernate.batchsequencegenerator.entities.ParentEntity</class>
+    <class>com.github.marschall.hibernate.batchsequencegenerator.entities.ChildEntity</class>
 
     <properties>
       <property name="hibernate.jdbc.batch_size" value="50" />
@@ -51,16 +51,16 @@
   <persistence-unit name="h2-default">
     <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
-    <class>com.github.marschall.hibernate.batchsequencegenerators.entities.ParentEntity</class>
-    <class>com.github.marschall.hibernate.batchsequencegenerators.entities.ChildEntity</class>
+    <class>com.github.marschall.hibernate.batchsequencegenerator.entities.ParentEntity</class>
+    <class>com.github.marschall.hibernate.batchsequencegenerator.entities.ChildEntity</class>
 
   </persistence-unit>
 
   <persistence-unit name="h2-batched">
     <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
-    <class>com.github.marschall.hibernate.batchsequencegenerators.entities.ParentEntity</class>
-    <class>com.github.marschall.hibernate.batchsequencegenerators.entities.ChildEntity</class>
+    <class>com.github.marschall.hibernate.batchsequencegenerator.entities.ParentEntity</class>
+    <class>com.github.marschall.hibernate.batchsequencegenerator.entities.ChildEntity</class>
 
     <properties>
       <property name="hibernate.jdbc.batch_size" value="50" />
@@ -73,16 +73,16 @@
   <persistence-unit name="postgres-default">
     <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
-    <class>com.github.marschall.hibernate.batchsequencegenerators.entities.ParentEntity</class>
-    <class>com.github.marschall.hibernate.batchsequencegenerators.entities.ChildEntity</class>
+    <class>com.github.marschall.hibernate.batchsequencegenerator.entities.ParentEntity</class>
+    <class>com.github.marschall.hibernate.batchsequencegenerator.entities.ChildEntity</class>
 
   </persistence-unit>
 
   <persistence-unit name="postgres-batched">
     <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
-    <class>com.github.marschall.hibernate.batchsequencegenerators.entities.ParentEntity</class>
-    <class>com.github.marschall.hibernate.batchsequencegenerators.entities.ChildEntity</class>
+    <class>com.github.marschall.hibernate.batchsequencegenerator.entities.ParentEntity</class>
+    <class>com.github.marschall.hibernate.batchsequencegenerator.entities.ChildEntity</class>
 
     <properties>
       <property name="hibernate.jdbc.batch_size" value="50" />
@@ -95,16 +95,16 @@
   <persistence-unit name="sqlserver-default">
     <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
-    <class>com.github.marschall.hibernate.batchsequencegenerators.entities.ParentEntity</class>
-    <class>com.github.marschall.hibernate.batchsequencegenerators.entities.ChildEntity</class>
+    <class>com.github.marschall.hibernate.batchsequencegenerator.entities.ParentEntity</class>
+    <class>com.github.marschall.hibernate.batchsequencegenerator.entities.ChildEntity</class>
 
   </persistence-unit>
 
   <persistence-unit name="sqlserver-batched">
     <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
-    <class>com.github.marschall.hibernate.batchsequencegenerators.entities.ParentEntity</class>
-    <class>com.github.marschall.hibernate.batchsequencegenerators.entities.ChildEntity</class>
+    <class>com.github.marschall.hibernate.batchsequencegenerator.entities.ParentEntity</class>
+    <class>com.github.marschall.hibernate.batchsequencegenerator.entities.ChildEntity</class>
 
     <properties>
       <property name="hibernate.jdbc.batch_size" value="50" />
@@ -117,16 +117,16 @@
   <persistence-unit name="firebird-default">
     <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
-    <class>com.github.marschall.hibernate.batchsequencegenerators.entities.ParentEntity</class>
-    <class>com.github.marschall.hibernate.batchsequencegenerators.entities.ChildEntity</class>
+    <class>com.github.marschall.hibernate.batchsequencegenerator.entities.ParentEntity</class>
+    <class>com.github.marschall.hibernate.batchsequencegenerator.entities.ChildEntity</class>
 
   </persistence-unit>
 
   <persistence-unit name="firebird-batched">
     <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
-    <class>com.github.marschall.hibernate.batchsequencegenerators.entities.ParentEntity</class>
-    <class>com.github.marschall.hibernate.batchsequencegenerators.entities.ChildEntity</class>
+    <class>com.github.marschall.hibernate.batchsequencegenerator.entities.ParentEntity</class>
+    <class>com.github.marschall.hibernate.batchsequencegenerator.entities.ChildEntity</class>
 
     <properties>
       <property name="hibernate.jdbc.batch_size" value="50" />
@@ -139,16 +139,16 @@
   <persistence-unit name="maria-default">
     <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
-    <class>com.github.marschall.hibernate.batchsequencegenerators.entities.ParentEntity</class>
-    <class>com.github.marschall.hibernate.batchsequencegenerators.entities.ChildEntity</class>
+    <class>com.github.marschall.hibernate.batchsequencegenerator.entities.ParentEntity</class>
+    <class>com.github.marschall.hibernate.batchsequencegenerator.entities.ChildEntity</class>
 
   </persistence-unit>
 
   <persistence-unit name="maria-batched">
     <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
-    <class>com.github.marschall.hibernate.batchsequencegenerators.entities.ParentEntity</class>
-    <class>com.github.marschall.hibernate.batchsequencegenerators.entities.ChildEntity</class>
+    <class>com.github.marschall.hibernate.batchsequencegenerator.entities.ParentEntity</class>
+    <class>com.github.marschall.hibernate.batchsequencegenerator.entities.ChildEntity</class>
 
     <properties>
       <property name="hibernate.jdbc.batch_size" value="50" />
@@ -161,16 +161,16 @@
   <persistence-unit name="oracle-default">
     <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
-    <class>com.github.marschall.hibernate.batchsequencegenerators.entities.ParentEntity</class>
-    <class>com.github.marschall.hibernate.batchsequencegenerators.entities.ChildEntity</class>
+    <class>com.github.marschall.hibernate.batchsequencegenerator.entities.ParentEntity</class>
+    <class>com.github.marschall.hibernate.batchsequencegenerator.entities.ChildEntity</class>
 
   </persistence-unit>
 
   <persistence-unit name="oracle-batched">
     <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
-    <class>com.github.marschall.hibernate.batchsequencegenerators.entities.ParentEntity</class>
-    <class>com.github.marschall.hibernate.batchsequencegenerators.entities.ChildEntity</class>
+    <class>com.github.marschall.hibernate.batchsequencegenerator.entities.ParentEntity</class>
+    <class>com.github.marschall.hibernate.batchsequencegenerator.entities.ChildEntity</class>
 
     <properties>
       <property name="hibernate.jdbc.batch_size" value="50" />

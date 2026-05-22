@@ -6,13 +6,13 @@ import static com.github.marschall.hibernate.batchsequencegenerator.BatchSequenc
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
-import jakarta.persistence.Column;
+import com.github.marschall.hibernate.batchsequencegenerator.BatchSequenceGenerator;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
-import com.github.marschall.hibernate.batchsequencegenerator.BatchSequenceGenerator;
 
-@Entity(name = "CHILD_ENTITY")
+@Entity
 public class ChildEntity {
 
   @Id
@@ -24,10 +24,8 @@ public class ChildEntity {
               @Parameter(name = FETCH_SIZE_PARAM, value = "50")
           })
   @GeneratedValue(generator = "child_id_generator")
-  @Column(name = "CHILD_ID")
   private Long childId;
 
-  @Column(name = "PARENT_ID")
   private Long parentId;
 
   public Long getChildId() {

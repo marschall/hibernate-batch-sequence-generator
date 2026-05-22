@@ -1,7 +1,11 @@
 package com.github.marschall.hibernate.batchsequencegenerator.configurations;
 
+import java.util.Map;
+
 import javax.sql.DataSource;
 
+import org.hibernate.boot.model.naming.PhysicalNamingStrategySnakeCaseImpl;
+import org.hibernate.cfg.AvailableSettings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,8 +33,7 @@ public class HibernateConfiguration {
     bean.setPersistenceUnitName(this.environment.getProperty(PERSISTENCE_UNIT_NAME));
     bean.setJpaDialect(this.jpaDialect());
     bean.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
-//    Map<String, Object> jpaProperties = Map.of(AvailableSettings.PHYSICAL_NAMING_STRATEGY, new CamelCaseToUnderscoresNamingStrategy());
-//    bean.setJpaPropertyMap(jpaProperties);
+    bean.getJpaPropertyMap().put(AvailableSettings.PHYSICAL_NAMING_STRATEGY, new PhysicalNamingStrategySnakeCaseImpl());
     bean.setDataSource(this.dataSource);
     return bean;
   }
