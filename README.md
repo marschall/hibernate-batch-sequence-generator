@@ -1,4 +1,4 @@
-Hibernate Batch Sequence Generator [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.marschall/hibernate-batch-sequence-generator/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.marschall/hibernate-batch-sequence-generator) [![Javadocs](https://www.javadoc.io/badge/com.github.marschall/hibernate-batch-sequence-generator.svg)](https://www.javadoc.io/doc/com.github.marschall/hibernate-batch-sequence-generator)  [![Build Status](https://travis-ci.org/marschall/hibernate-batch-sequence-generator.svg?branch=master)](https://travis-ci.org/marschall/hibernate-batch-sequence-generator)
+Hibernate Batch Sequence Generator  [![Maven Central](https://img.shields.io/maven-central/v/com.github.marschall/hibernate-batch-sequence-generator?color=31c653&label=maven%20central)](https://central.sonatype.com/artifact/com.github.marschall/hibernate-batch-sequence-generator) [![Javadocs](https://www.javadoc.io/badge/com.github.marschall/hibernate-batch-sequence-generator.svg)](https://www.javadoc.io/doc/com.github.marschall/hibernate-batch-sequence-generator)
 ==================================
 
 A batch sequence generator for Hibernate that uses [recursive queries](https://en.wikipedia.org/wiki/Hierarchical_and_recursive_queries_in_SQL) to preallocate multiple values in a single database access.
@@ -9,17 +9,16 @@ The code is also present in [Hibernate Types](https://github.com/vladmihalcea/hi
 <dependency>
   <groupId>com.github.marschall</groupId>
   <artifactId>hibernate-batch-sequence-generator</artifactId>
-  <version>2.2.0</version>
+  <version>3.0.0</version>
 </dependency>
 ```
 
-Versions 2.2.x support Hibernate 6.5.
-
-Versions 2.1.x support Hibernate 6.4.
-
-Versions 2.0.x support Hibernate 6.x.
-
-Versions 1.x support Hibernate 5.6.
+- Versions 3.0.x support Hibernate 7.3.
+- Versions 2.3.x support Hibernate 6.6.
+- Versions 2.2.x support Hibernate 6.5.
+- Versions 2.1.x support Hibernate 6.4.
+- Versions 2.0.x support Hibernate 6.x.
+- Versions 1.x support Hibernate 5.6.
 
 This sequence generator combines the advantages of several existing sequence generators and avoids their disadvantages:
 
