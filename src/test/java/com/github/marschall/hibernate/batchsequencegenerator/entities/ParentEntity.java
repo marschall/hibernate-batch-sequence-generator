@@ -5,22 +5,18 @@ import java.util.Set;
 
 import com.github.marschall.hibernate.batchsequencegenerator.BatchSequence;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 
-@Entity(name = "PARENT_ENTITY")
+@Entity
 public class ParentEntity {
 
   @Id
   @BatchSequence(name = "SEQ_PARENT_ID", fetchSize = 50)
-  @Column(name = "PARENT_ID")
   private Long parentId;
 
-  @OneToMany
-  @JoinColumn(name = "PARENT_ID")
+  @OneToMany(mappedBy = "parentId")
   private Set<ChildEntity> children = new HashSet<>();
 
   public Long getParentId() {

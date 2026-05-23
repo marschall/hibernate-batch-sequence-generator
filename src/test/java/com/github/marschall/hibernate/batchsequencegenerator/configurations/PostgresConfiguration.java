@@ -1,7 +1,5 @@
 package com.github.marschall.hibernate.batchsequencegenerator.configurations;
 
-import static com.github.marschall.hibernate.batchsequencegenerator.Travis.isTravis;
-
 import java.sql.SQLException;
 
 import javax.sql.DataSource;
@@ -33,7 +31,7 @@ public class PostgresConfiguration {
     dataSource.setUrl("jdbc:postgresql:" + userName);
     dataSource.setUsername(userName);
 
-    String password = isTravis() ? "" : "Cent-Quick-Space-Bath-8";
+    String password = "Cent-Quick-Space-Bath-8";
     dataSource.setPassword(password);
     return dataSource;
   }
