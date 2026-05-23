@@ -173,7 +173,6 @@ public final class BatchSequenceGenerator implements BulkInsertionCapableIdentif
    * Called if {@link BatchSequence} is used.
    * 
    * @param annotation the annotation
-   * @param annotatedMember the annoated field or getter
    * @param context the context
    */
   public BatchSequenceGenerator(BatchSequence annotation,
