@@ -120,6 +120,9 @@
     <class>com.github.marschall.hibernate.batchsequencegenerator.entities.ParentEntity</class>
     <class>com.github.marschall.hibernate.batchsequencegenerator.entities.ChildEntity</class>
 
+    <properties>
+      <property name="hibernate.dialect" value="org.hibernate.community.dialect.FirebirdDialect" />
+    </properties>
   </persistence-unit>
 
   <persistence-unit name="firebird-batched">
@@ -133,6 +136,7 @@
       <property name="hibernate.order_inserts" value="true" />
       <property name="hibernate.order_updates" value="true" />
       <property name="hibernate.jdbc.batch_versioned_data" value="true" />
+      <property name="hibernate.dialect" value="org.hibernate.community.dialect.FirebirdDialect" />
     </properties>
   </persistence-unit>
 
