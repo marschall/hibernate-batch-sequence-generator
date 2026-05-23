@@ -1,7 +1,5 @@
 package com.github.marschall.hibernate.batchsequencegenerator;
 
-import static org.junit.jupiter.api.Assumptions.assumeTrue;
-
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -65,9 +63,6 @@ public class BatchSequenceGeneratorIntegrationTest {
   }
 
   private void setUp(Class<?> dataSourceConfiguration, String persistenceUnitName) {
-    if (isTravis()) {
-      assumeTrue(isSupportedOnTravis(persistenceUnitName));
-    }
     this.applicationContext = new AnnotationConfigApplicationContext();
     this.applicationContext.register(dataSourceConfiguration, HibernateConfiguration.class, TransactionManagerConfiguration.class);
     ConfigurableEnvironment environment = this.applicationContext.getEnvironment();
@@ -82,21 +77,6 @@ public class BatchSequenceGeneratorIntegrationTest {
     this.template.execute(status -> {
       return this.populateDatabase();
     });
-  }
-
-
-
-  private static boolean isTravis() {
-    return System.getenv().getOrDefault("TRAVIS", "false").equals("true");
-  }
-
-  private static boolean isSupportedOnTravis(String persistenceUnitName) {
-    // DB2, Firebird, SQL Server, MariaDB and Oracle are currently not supported on Travis CI
-    return !(persistenceUnitName.contains("firebird")
-            || persistenceUnitName.contains("sqlserver")
-            || persistenceUnitName.contains("maria")
-            || persistenceUnitName.contains("oracle")
-            || persistenceUnitName.contains("db2"));
   }
 
   private Object populateDatabase() {
