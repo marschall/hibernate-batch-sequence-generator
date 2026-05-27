@@ -1,7 +1,5 @@
 package com.github.marschall.hibernate.batchsequencegenerator.configurations;
 
-import java.util.Map;
-
 import javax.sql.DataSource;
 
 import org.hibernate.boot.model.naming.PhysicalNamingStrategySnakeCaseImpl;
@@ -14,6 +12,8 @@ import org.springframework.orm.jpa.JpaDialect;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaDialect;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
+
+import com.github.marschall.hibernate.batchsequencegenerator.hibernate.PrefixDatabaseObjectNamingStrategy;
 
 @Configuration
 public class HibernateConfiguration {
@@ -34,6 +34,7 @@ public class HibernateConfiguration {
     bean.setJpaDialect(this.jpaDialect());
     bean.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
     bean.getJpaPropertyMap().put(AvailableSettings.PHYSICAL_NAMING_STRATEGY, new PhysicalNamingStrategySnakeCaseImpl());
+    bean.getJpaPropertyMap().put(AvailableSettings.ID_DB_STRUCTURE_NAMING_STRATEGY, PrefixDatabaseObjectNamingStrategy.class.getName());
     bean.setDataSource(this.dataSource);
     return bean;
   }

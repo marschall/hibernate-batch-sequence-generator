@@ -1,5 +1,8 @@
 package com.github.marschall.hibernate.batchsequencegenerator;
 
+import static org.hibernate.id.IdentifierGeneratorHelper.getNamingStrategy;
+import static org.hibernate.internal.util.StringHelper.isNotEmpty;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -22,7 +25,6 @@ import org.hibernate.boot.model.naming.Identifier;
 import org.hibernate.boot.model.relational.Database;
 import org.hibernate.boot.model.relational.QualifiedName;
 import org.hibernate.boot.model.relational.QualifiedNameParser;
-import org.hibernate.boot.model.relational.QualifiedNameParser.NameParts;
 import org.hibernate.boot.model.relational.SqlStringGenerationContext;
 import org.hibernate.dialect.Dialect;
 import org.hibernate.engine.jdbc.env.spi.JdbcEnvironment;
@@ -33,6 +35,7 @@ import org.hibernate.id.BulkInsertionCapableIdentifierGenerator;
 import org.hibernate.id.IdentifierGenerationException;
 import org.hibernate.id.IdentifierGenerator;
 import org.hibernate.id.enhanced.DatabaseStructure;
+import org.hibernate.id.enhanced.ImplicitDatabaseObjectNamingStrategy;
 import org.hibernate.id.enhanced.SequenceStructure;
 import org.hibernate.internal.util.config.ConfigurationHelper;
 import org.hibernate.models.spi.TypeDetails;
@@ -140,7 +143,10 @@ import org.hibernate.type.Type;
 public final class BatchSequenceGenerator implements BulkInsertionCapableIdentifierGenerator, IdentifierGenerator {
 
   /**
-   * Indicates the name of the sequence to use, mandatory.
+   * Indicates the name of the sequence to use.
+   * <p>
+   * If omitted (empty or {@code null} then {@link ImplicitDatabaseObjectNamingStrategy}
+   * is used to drive the name.
    * 
    * @deprecated use {@link BatchSequence}
    */
@@ -170,6 +176,10 @@ public final class BatchSequenceGenerator implements BulkInsertionCapableIdentif
 
   private QualifiedName sequenceName;
 
+  private BatchSequence annotation;
+
+  private GeneratorCreationContext context;
+
   /**
    * Called if {@link BatchSequence} is used.
    * 
@@ -178,12 +188,8 @@ public final class BatchSequenceGenerator implements BulkInsertionCapableIdentif
    */
   public BatchSequenceGenerator(BatchSequence annotation,
           GeneratorCreationContext context) {
-    this.sequenceName = determineSequenceName(annotation);
-    this.fetchSize = annotation.fetchSize();
-
-    Class<?> type = getType(context);
-    this.identifierExtractor = IdentifierExtractor.getIdentifierExtractor(type);
-    this.databaseStructure = this.buildDatabaseStructure(type, sequenceName, "orm");
+    this.annotation = annotation;
+    this.context = context;
   }
 
   private static Class<?> getType(GeneratorCreationContext context) {
@@ -205,14 +211,21 @@ public final class BatchSequenceGenerator implements BulkInsertionCapableIdentif
 
   @Override
   public void configure(Type type, Properties params, ServiceRegistry serviceRegistry) {
-    if (this.sequenceName == null) {
+    if (this.annotation == null) {
       // GenericGenerator is used, default constructor was called
-      this.sequenceName = determineSequenceName(params);
+      this.sequenceName = determineSequenceName(params, serviceRegistry);
       this.fetchSize = determineFetchSize(params);
       Class<?> returnedClass = type.getReturnedClass();
       this.identifierExtractor = IdentifierExtractor.getIdentifierExtractor(returnedClass);
       String contributor = this.determineContributor(params);
       this.databaseStructure = this.buildDatabaseStructure(returnedClass, sequenceName, contributor);
+    } else {
+      this.sequenceName = determineSequenceName(annotation, params, serviceRegistry);
+      this.fetchSize = annotation.fetchSize();
+
+      Class<?> identifierType = getType(context);
+      this.identifierExtractor = IdentifierExtractor.getIdentifierExtractor(identifierType);
+      this.databaseStructure = this.buildDatabaseStructure(identifierType, sequenceName, "orm");
     }
   }
 
@@ -282,20 +295,32 @@ public final class BatchSequenceGenerator implements BulkInsertionCapableIdentif
     return contributor == null ? "orm" : contributor;
   }
 
-  private static QualifiedName determineSequenceName(Properties params) {
+  private static QualifiedName determineSequenceName(Properties params, ServiceRegistry serviceRegistry) {
     String sequenceName = params.getProperty(SEQUENCE_PARAM);
-    if (sequenceName == null) {
-      throw new MappingException("no squence name specified");
-    }
-    return QualifiedNameParser.INSTANCE.parse(sequenceName);
+    return sequenceName(params, serviceRegistry, sequenceName);
   }
-  
-  private static QualifiedName determineSequenceName(BatchSequence annotation) {
+
+  private static QualifiedName determineSequenceName(BatchSequence annotation, Properties params,
+      ServiceRegistry serviceRegistry) {
     String sequenceName = annotation.name();
-    if (sequenceName == null || sequenceName.isBlank()) {
-      throw new MappingException("no squence name specified");
+    return sequenceName(params, serviceRegistry, sequenceName);
+  }
+
+  private static QualifiedName sequenceName(Properties params, ServiceRegistry serviceRegistry,
+      String explicitSequenceName) {
+    var jdbcEnvironment = serviceRegistry.requireService( JdbcEnvironment.class );
+    var identifierHelper = jdbcEnvironment.getIdentifierHelper();
+    Identifier catalog = null;
+    Identifier schema = null;
+    if (isNotEmpty(explicitSequenceName)) {
+      // we have an explicit name, use it
+      return explicitSequenceName.contains(".") ? QualifiedNameParser.INSTANCE.parse(explicitSequenceName)
+          : new QualifiedNameParser.NameParts(catalog, schema,
+              identifierHelper.toIdentifier(explicitSequenceName, false, true));
+    } else {
+      // otherwise, determine an implicit name to use
+      return getNamingStrategy(params, serviceRegistry).determineSequenceName(catalog, schema, params, serviceRegistry);
     }
-    return QualifiedNameParser.INSTANCE.parse(sequenceName);
   }
 
   private static int determineFetchSize(Properties params) {

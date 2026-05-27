@@ -13,7 +13,7 @@ import jakarta.persistence.OneToMany;
 public class ParentEntity {
 
   @Id
-  @BatchSequence(name = "SEQ_PARENT_ID", fetchSize = 50)
+  @BatchSequence(fetchSize = 50)
   private Long parentId;
 
   @OneToMany(mappedBy = "parentId")
