@@ -418,7 +418,7 @@
   <properties>
     <project.reporting.outputEncoding>utf-8</project.reporting.outputEncoding>
     <project.build.sourceEncoding>utf-8</project.build.sourceEncoding>
-    <hibernate.version>7.3.5.Final</hibernate.version>
+    <hibernate.version>7.4.0.Final</hibernate.version>
     <project.build.outputTimestamp>2026-05-23T20:24:55Z</project.build.outputTimestamp>
     <maven.compiler.release>17</maven.compiler.release>
   </properties>
