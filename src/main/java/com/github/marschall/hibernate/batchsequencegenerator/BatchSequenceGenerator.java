@@ -244,46 +244,62 @@ public final class BatchSequenceGenerator implements BulkInsertionCapableIdentif
     }
     if (dialect instanceof org.hibernate.dialect.SQLServerDialect) {
       // No RECURSIVE
-      return "WITH t(n) AS ( "
-          + "SELECT 1 as n "
-          + "UNION ALL "
-          +"SELECT n + 1 as n FROM t WHERE n < ?) "
-          // sequence generation outside of WITH
-          + "SELECT " + nextValString + " as n FROM t";
+      // sequence generation outside of WITH
+      return """
+             WITH t(n) AS (
+               SELECT 1 as n
+                UNION ALL
+               SELECT n + 1 as n
+                 FROM t
+                WHERE n < ?)
+             SELECT %s as n
+               FROM t
+             """.formatted(nextValString);
     }
     if (dialect instanceof org.hibernate.dialect.DB2Dialect) {
       // No RECURSIVE
-      return "WITH t(n) AS ( "
-          + "SELECT 1 as n "
-          // difference
-          + "FROM (VALUES 1) "
-          + "UNION ALL "
-          +"SELECT n + 1 as n FROM t WHERE n < ?) "
+      // difference is FROM (VALUES 1)
       // sequence generation outside of WITH
-          + "SELECT " + nextValString + " as n FROM t";
+      return """
+             WITH t(n) AS (
+               SELECT 1 as n 
+                 FROM (VALUES 1)
+                UNION ALL "
+               SELECT n + 1 as n
+                 FROM t
+                WHERE n < ?)
+             SELECT %s as n
+               FROM t
+             """.formatted(nextValString);
     }
     if (dialect instanceof org.hibernate.dialect.HSQLDialect) {
       // https://stackoverflow.com/questions/44472280/cte-based-sequence-generation-with-hsqldb/52329862
       return "SELECT " + nextValString + " FROM UNNEST(SEQUENCE_ARRAY(1, ?, 1))";
     }
     if (dialect instanceof org.hibernate.community.dialect.FirebirdDialect) {
-      return "WITH RECURSIVE t(n, level_num) AS ("
-              + "SELECT " + nextValString + " as n, 1 as level_num "
-              // difference
-              + " FROM rdb$database "
-              + "UNION ALL "
-              + "SELECT " + nextValString + " as n, level_num + 1 as level_num "
-              + " FROM t "
-              + " WHERE level_num < ?) "
-              + "SELECT n FROM t";
+      // difference rdb$database
+      return """
+              WITH RECURSIVE t(n, level_num) AS (
+                SELECT %1$s as n, 1 as level_num
+                  FROM rdb$database
+                 UNION ALL
+                SELECT %1$s as n, level_num + 1 as level_num
+                  FROM t
+                 WHERE level_num < ?)
+              SELECT n
+                FROM t
+             """.formatted(nextValString);
     }
-    return "WITH RECURSIVE t(n) AS ("
-            + "SELECT 1 "
-            + "UNION ALL "
-            + "SELECT n + 1 "
-            + " FROM t "
-            + " WHERE n < ?) "
-            + "SELECT " + nextValString + " FROM t";
+    return """
+           WITH RECURSIVE t(n) AS (
+             SELECT 1
+              UNION ALL
+             SELECT n + 1
+               FROM t
+              WHERE n < ?)
+           SELECT %s
+             FROM t
+           """.formatted(nextValString);
   }
 
   private SequenceStructure buildDatabaseStructure(Class<?> type, QualifiedName sequenceName, String contributor) {
