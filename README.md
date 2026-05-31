@@ -9,10 +9,11 @@ The code is also present in [Hibernate Types](https://github.com/vladmihalcea/hi
 <dependency>
   <groupId>com.github.marschall</groupId>
   <artifactId>hibernate-batch-sequence-generator</artifactId>
-  <version>3.0.0</version>
+  <version>3.1.0</version>
 </dependency>
 ```
 
+- Versions 3.1.x support Hibernate 7.4.
 - Versions 3.0.x support Hibernate 7.3.
 - Versions 2.3.x support Hibernate 6.6.
 - Versions 2.2.x support Hibernate 6.5.
@@ -54,7 +55,7 @@ You need to configure the following things
 
 <dl>
 <dt>SOME_SEQUENCE_NAME</dt>
-<dd>the SQL name of the sequence from which the values should be fetched</dd>
+<dd>The logical name of the sequence from which the values should be fetched. Optional, can be dervied using `ImplicitDatabaseObjectNamingStrategy` / `hibernate.id.db_structure_naming_strategy`</dd>
 <dt>SOME_FETCH_SIZE_VALUE</dt>
 <dd>integer, how many values should be fetched at once, this should be equal to the <code>CACHE</code> value of the sequence, optional, default value is 10</dd>
 </dl>
