@@ -17,7 +17,6 @@ public final class PrefixDatabaseObjectNamingStrategy implements ImplicitDatabas
   @Override
   public QualifiedName determineSequenceName(Identifier catalogName, Identifier schemaName, Map<?, ?> configValues,
       ServiceRegistry serviceRegistry) {
-    // tableName = PersistentIdentifierGenerator.TABLE
     Object targetColumn = configValues.get(PersistentIdentifierGenerator.PK);
     return new QualifiedSequenceName(catalogName, schemaName, Identifier.toIdentifier("seq_" + targetColumn));
   }
