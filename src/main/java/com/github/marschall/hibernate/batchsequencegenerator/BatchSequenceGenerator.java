@@ -41,6 +41,7 @@ import org.hibernate.id.enhanced.SequenceStructure;
 import org.hibernate.internal.util.config.ConfigurationHelper;
 import org.hibernate.models.spi.TypeDetails;
 import org.hibernate.models.spi.TypeDetails.Kind;
+import org.hibernate.resource.jdbc.ResourceRegistry;
 import org.hibernate.service.ServiceRegistry;
 import org.hibernate.type.Type;
 import org.jboss.logging.Logger;
@@ -387,21 +388,33 @@ public final class BatchSequenceGenerator implements BulkInsertionCapableIdentif
           throws HibernateException {
     JdbcCoordinator coordinator = session.getJdbcCoordinator();
     List<Serializable> identifiers = new ArrayList<>(this.fetchSize);
-    try (PreparedStatement statement = coordinator.getStatementPreparer().prepareStatement(this.select)) {
+    PreparedStatement statement = coordinator.getStatementPreparer().prepareStatement(this.select);
+    ResourceRegistry registry = coordinator.getLogicalConnection().getResourceRegistry();
+    try {
       statement.setFetchSize(this.fetchSize);
       statement.setInt(1, this.fetchSize);
-      try (ResultSet resultSet = coordinator.getResultSetReturn().extract(statement, this.select)) {
+      ResultSet resultSet = coordinator.getResultSetReturn().extract(statement, this.select);
+      try {
         while (resultSet.next()) {
           identifiers.add(this.identifierExtractor.extractIdentifier(resultSet));
+        }
+      } finally {
+        try {
+          registry.release(resultSet, statement);
+        } catch (Throwable ignore) {
+          // intentionally empty
         }
       }
     } catch (SQLException e) {
       throw session.getJdbcServices().getSqlExceptionHelper().convert(
               e, "could not get next sequence value", this.select);
+    } finally {
+      registry.release(statement);
+      coordinator.afterStatementExecution();
     }
     if (identifiers.size() != this.fetchSize) {
       throw new IdentifierGenerationException("expected " + this.fetchSize + " values from " + this.getSequenceName()
-              + " but got " + identifiers.size());
+      + " but got " + identifiers.size());
     }
     if (identifiers.size() != this.fetchSize) {
       LOGGER.warnf("expected to get %d indentifiers but got %d", this.fetchSize, identifiers.size());

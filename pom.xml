@@ -96,7 +96,7 @@
         <configuration>
           <links>
             <link>https://docs.oracle.com/javase/17/docs/api/</link>
-            <link>https://docs.jboss.org/hibernate/orm/7.3/javadocs/</link>
+            <link>https://docs.jboss.org/hibernate/orm/7.4/javadocs/</link>
           </links>
           <notimestamp>true</notimestamp>
         </configuration>
@@ -109,6 +109,20 @@
             </goals>
           </execution>
         </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <!--
+            prevent JFR from logging to stdout [0.242s][info   ][jfr,startup] Use jcmd 88403 JFR.dump name=1 to copy recording data to file.
+            https://bugs.openjdk.org/browse/JDK-8244190
+           -->
+          <argLine>
+            -XX:StartFlightRecording:filename=${project.build.directory}/recording.jfr,dumponexit=true,maxsize=5m,settings=profile
+            -Xlog:jfr+startup=error
+            -Xmx256m
+          </argLine>
+        </configuration>
       </plugin>
       <plugin>
         <groupId>io.smallrye</groupId>
@@ -227,7 +241,7 @@
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-framework-bom</artifactId>
-        <version>7.0.7</version>
+        <version>7.0.8</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -260,6 +274,12 @@
       <artifactId>hibernate-community-dialects</artifactId>
       <version>${hibernate.version}</version>
       <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.hibernate.orm</groupId>
+      <artifactId>hibernate-jfr</artifactId>
+      <version>${hibernate.version}</version>
+      <scope>test</scope>
     </dependency>
 
     <dependency>
@@ -418,7 +438,7 @@
   <properties>
     <project.reporting.outputEncoding>utf-8</project.reporting.outputEncoding>
     <project.build.sourceEncoding>utf-8</project.build.sourceEncoding>
-    <hibernate.version>7.4.0.Final</hibernate.version>
+    <hibernate.version>7.4.1.Final</hibernate.version>
     <project.build.outputTimestamp>2026-05-31T16:07:19Z</project.build.outputTimestamp>
     <maven.compiler.release>17</maven.compiler.release>
   </properties>
