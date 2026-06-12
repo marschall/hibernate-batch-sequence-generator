@@ -4,6 +4,7 @@ import static org.hibernate.id.IdentifierGeneratorHelper.getNamingStrategy;
 import static org.hibernate.internal.util.StringHelper.isNotEmpty;
 
 import java.io.Serializable;
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
@@ -42,6 +43,7 @@ import org.hibernate.models.spi.TypeDetails;
 import org.hibernate.models.spi.TypeDetails.Kind;
 import org.hibernate.service.ServiceRegistry;
 import org.hibernate.type.Type;
+import org.jboss.logging.Logger;
 
 /**
  * A sequence generator that uses a recursive query to fetch multiple
@@ -141,6 +143,8 @@ import org.hibernate.type.Type;
  * sequences is supported.
  */
 public final class BatchSequenceGenerator implements BulkInsertionCapableIdentifierGenerator, IdentifierGenerator {
+
+  private static final Logger LOGGER = Logger.getLogger(MethodHandles.lookup().lookupClass());
 
   /**
    * Indicates the name of the sequence to use.
@@ -398,6 +402,9 @@ public final class BatchSequenceGenerator implements BulkInsertionCapableIdentif
     if (identifiers.size() != this.fetchSize) {
       throw new IdentifierGenerationException("expected " + this.fetchSize + " values from " + this.getSequenceName()
               + " but got " + identifiers.size());
+    }
+    if (identifiers.size() != this.fetchSize) {
+      LOGGER.warnf("expected to get %d indentifiers but got %d", this.fetchSize, identifiers.size());
     }
     return IdentifierPool.forList(identifiers);
   }
