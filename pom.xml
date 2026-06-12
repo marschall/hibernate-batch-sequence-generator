@@ -233,7 +233,7 @@
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-framework-bom</artifactId>
-        <version>6.2.18</version>
+        <version>6.2.19</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -424,7 +424,7 @@
   <properties>
     <project.reporting.outputEncoding>utf-8</project.reporting.outputEncoding>
     <project.build.sourceEncoding>utf-8</project.build.sourceEncoding>
-    <hibernate.version>6.6.50.Final</hibernate.version>
+    <hibernate.version>6.6.53.Final</hibernate.version>
     <project.build.outputTimestamp>2026-05-23T19:35:02Z</project.build.outputTimestamp>
   </properties>
 
