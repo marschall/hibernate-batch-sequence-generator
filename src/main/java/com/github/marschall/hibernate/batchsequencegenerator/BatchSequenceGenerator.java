@@ -23,7 +23,6 @@ import org.hibernate.MappingException;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.boot.model.naming.Identifier;
 import org.hibernate.boot.model.relational.Database;
-import org.hibernate.boot.model.relational.ExportableProducer;
 import org.hibernate.boot.model.relational.QualifiedName;
 import org.hibernate.boot.model.relational.QualifiedNameParser;
 import org.hibernate.boot.model.relational.SqlStringGenerationContext;
