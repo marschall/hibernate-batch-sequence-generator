@@ -9,11 +9,11 @@ The code is also present in [Hibernate Types](https://github.com/vladmihalcea/hi
 <dependency>
   <groupId>com.github.marschall</groupId>
   <artifactId>hibernate-batch-sequence-generator</artifactId>
-  <version>3.1.0</version>
+  <version>3.2.0</version>
 </dependency>
 ```
 
-- Versions 3.1.x support Hibernate 7.4.
+- Versions 3.2.x support Hibernate 7.4.
 - Versions 3.0.x support Hibernate 7.3.
 - Versions 2.3.x support Hibernate 6.6.
 - Versions 2.2.x support Hibernate 6.5.
