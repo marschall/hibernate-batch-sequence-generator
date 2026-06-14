@@ -170,6 +170,19 @@ public final class BatchSequenceGenerator implements BulkInsertionCapableIdentif
    * The default value for {@link #FETCH_SIZE_PARAM}.
    */
   public static final int DEFAULT_FETCH_SIZE = 10;
+  
+  static final Class<? extends Dialect> FIREBIRD_DIALECT;
+  
+  static {
+    Class<? extends Dialect> firebirdDialect;
+    try {
+      firebirdDialect = Class.forName("org.hibernate.community.dialect.FirebirdDialect").asSubclass(Dialect.class);
+    } catch (ClassNotFoundException e) {
+      // hibernate-community-dialects not present
+      firebirdDialect = null;
+    }
+    FIREBIRD_DIALECT = firebirdDialect;
+  }
 
   private final Lock lock = new ReentrantLock();
 
@@ -281,7 +294,7 @@ public final class BatchSequenceGenerator implements BulkInsertionCapableIdentif
       // https://stackoverflow.com/questions/44472280/cte-based-sequence-generation-with-hsqldb/52329862
       return "SELECT " + nextValString + " FROM UNNEST(SEQUENCE_ARRAY(1, ?, 1))";
     }
-    if (dialect instanceof org.hibernate.community.dialect.FirebirdDialect) {
+    if (isFirebird(dialect)) {
       // difference rdb$database
       return """
               WITH RECURSIVE t(n, level_num) AS (
@@ -305,6 +318,10 @@ public final class BatchSequenceGenerator implements BulkInsertionCapableIdentif
            SELECT %s
              FROM t
            """.formatted(nextValString);
+  }
+
+  private static boolean isFirebird(Dialect dialect) {
+    return FIREBIRD_DIALECT != null && FIREBIRD_DIALECT.isInstance(dialect);
   }
 
   private SequenceStructure buildDatabaseStructure(Class<?> type, QualifiedName sequenceName, String contributor) {

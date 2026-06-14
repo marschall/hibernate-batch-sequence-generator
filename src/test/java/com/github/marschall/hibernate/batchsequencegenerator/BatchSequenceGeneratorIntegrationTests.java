@@ -35,7 +35,7 @@ import com.github.marschall.hibernate.batchsequencegenerator.entities.ParentEnti
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 
-public class BatchSequenceGeneratorIntegrationTest {
+public class BatchSequenceGeneratorIntegrationTests {
 
   private AnnotationConfigApplicationContext applicationContext;
   private TransactionTemplate template;
