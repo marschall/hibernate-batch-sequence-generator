@@ -23,7 +23,7 @@ public @interface BatchSequence {
    * Returns the name of the sequence to use.
    * <p>
    * If omitted (empty or {@code null} then {@link ImplicitDatabaseObjectNamingStrategy}
-   * is used to drive the name.
+   * is used to derive the name.
    * 
    * @return the name of the sequence to use
    * @see AvailableSettings#ID_DB_STRUCTURE_NAMING_STRATEGY

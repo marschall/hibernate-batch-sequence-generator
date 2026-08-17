@@ -26,6 +26,7 @@ import org.hibernate.boot.model.naming.Identifier;
 import org.hibernate.boot.model.relational.Database;
 import org.hibernate.boot.model.relational.QualifiedName;
 import org.hibernate.boot.model.relational.QualifiedNameParser;
+import org.hibernate.boot.model.relational.QualifiedSequenceName;
 import org.hibernate.boot.model.relational.SqlStringGenerationContext;
 import org.hibernate.dialect.Dialect;
 import org.hibernate.engine.jdbc.env.spi.JdbcEnvironment;
@@ -35,6 +36,7 @@ import org.hibernate.generator.GeneratorCreationContext;
 import org.hibernate.id.BulkInsertionCapableIdentifierGenerator;
 import org.hibernate.id.IdentifierGenerationException;
 import org.hibernate.id.IdentifierGenerator;
+import org.hibernate.id.IdentifierGeneratorHelper;
 import org.hibernate.id.enhanced.DatabaseStructure;
 import org.hibernate.id.enhanced.ImplicitDatabaseObjectNamingStrategy;
 import org.hibernate.id.enhanced.SequenceStructure;
@@ -151,7 +153,7 @@ public final class BatchSequenceGenerator implements BulkInsertionCapableIdentif
    * Indicates the name of the sequence to use.
    * <p>
    * If omitted (empty or {@code null} then {@link ImplicitDatabaseObjectNamingStrategy}
-   * is used to drive the name.
+   * is used to derive the name.
    * 
    * @deprecated use {@link BatchSequence}
    */
@@ -170,9 +172,9 @@ public final class BatchSequenceGenerator implements BulkInsertionCapableIdentif
    * The default value for {@link #FETCH_SIZE_PARAM}.
    */
   public static final int DEFAULT_FETCH_SIZE = 10;
-  
+
   static final Class<? extends Dialect> FIREBIRD_DIALECT;
-  
+
   static {
     Class<? extends Dialect> firebirdDialect;
     try {
@@ -229,22 +231,23 @@ public final class BatchSequenceGenerator implements BulkInsertionCapableIdentif
 
   @Override
   public void configure(Type type, Properties params, ServiceRegistry serviceRegistry) {
+    Class<?> identifierType;
+    String contributor;
     if (this.annotation == null) {
       // GenericGenerator is used, default constructor was called
       this.sequenceName = determineSequenceName(params, serviceRegistry);
       this.fetchSize = determineFetchSize(params);
-      Class<?> returnedClass = type.getReturnedClass();
-      this.identifierExtractor = IdentifierExtractor.getIdentifierExtractor(returnedClass);
-      String contributor = this.determineContributor(params);
-      this.databaseStructure = this.buildDatabaseStructure(returnedClass, sequenceName, contributor);
+      identifierType = type.getReturnedClass();
+      contributor = this.determineContributor(params);
     } else {
       this.sequenceName = determineSequenceName(annotation, params, serviceRegistry);
       this.fetchSize = annotation.fetchSize();
 
-      Class<?> identifierType = getType(context);
-      this.identifierExtractor = IdentifierExtractor.getIdentifierExtractor(identifierType);
-      this.databaseStructure = this.buildDatabaseStructure(identifierType, sequenceName, "orm");
+      identifierType = getType(context);
+      contributor = "orm";
     }
+    this.databaseStructure = this.buildDatabaseStructure(identifierType, sequenceName, contributor);
+    this.identifierExtractor = IdentifierExtractor.getIdentifierExtractor(identifierType);
   }
 
   @Override
@@ -259,6 +262,9 @@ public final class BatchSequenceGenerator implements BulkInsertionCapableIdentif
     String nextValString = dialect.getSequenceSupport().getSelectSequenceNextValString(context.format(sequenceName));
     if (dialect instanceof org.hibernate.dialect.OracleDialect) {
       return "SELECT " + nextValString + " FROM dual CONNECT BY level <= ?";
+    }
+    if (dialect instanceof org.hibernate.dialect.PostgreSQLDialect) {
+      return "SELECT " + nextValString + " FROM generate_series(1, ?)";
     }
     if (dialect instanceof org.hibernate.dialect.SQLServerDialect) {
       // No RECURSIVE
@@ -346,18 +352,21 @@ public final class BatchSequenceGenerator implements BulkInsertionCapableIdentif
 
   private static QualifiedName sequenceName(Properties params, ServiceRegistry serviceRegistry,
       String explicitSequenceName) {
+    if (explicitSequenceName.contains(".")) {
+      return QualifiedNameParser.INSTANCE.parse(explicitSequenceName);
+    }
     var jdbcEnvironment = serviceRegistry.requireService( JdbcEnvironment.class );
     var identifierHelper = jdbcEnvironment.getIdentifierHelper();
     Identifier catalog = null;
     Identifier schema = null;
     if (isNotEmpty(explicitSequenceName)) {
       // we have an explicit name, use it
-      return explicitSequenceName.contains(".") ? QualifiedNameParser.INSTANCE.parse(explicitSequenceName)
-          : new QualifiedNameParser.NameParts(catalog, schema,
+      return new QualifiedSequenceName(catalog, schema,
               identifierHelper.toIdentifier(explicitSequenceName, false, true));
     } else {
       // otherwise, determine an implicit name to use
-      return getNamingStrategy(params, serviceRegistry).determineSequenceName(catalog, schema, params, serviceRegistry);
+      var namingStrategy = IdentifierGeneratorHelper.getNamingStrategy(params, serviceRegistry);
+      return namingStrategy.determineSequenceName(catalog, schema, params, serviceRegistry);
     }
   }
 
