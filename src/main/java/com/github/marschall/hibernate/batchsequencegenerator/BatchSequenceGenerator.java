@@ -32,6 +32,7 @@ import org.hibernate.dialect.Dialect;
 import org.hibernate.engine.jdbc.env.spi.JdbcEnvironment;
 import org.hibernate.engine.jdbc.spi.JdbcCoordinator;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
+import org.hibernate.generator.AnnotationBasedGenerator;
 import org.hibernate.generator.GeneratorCreationContext;
 import org.hibernate.id.BulkInsertionCapableIdentifierGenerator;
 import org.hibernate.id.IdentifierGenerationException;
@@ -145,7 +146,7 @@ import org.jboss.logging.Logger;
  * In theory any RDBMS that supports {@code WITH RECURSIVE} and
  * sequences is supported.
  */
-public final class BatchSequenceGenerator implements BulkInsertionCapableIdentifierGenerator, IdentifierGenerator {
+public final class BatchSequenceGenerator implements BulkInsertionCapableIdentifierGenerator, IdentifierGenerator, AnnotationBasedGenerator<BatchSequence> {
 
   private static final Logger LOGGER = Logger.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -227,6 +228,12 @@ public final class BatchSequenceGenerator implements BulkInsertionCapableIdentif
    */
   public BatchSequenceGenerator() {
     super();
+  }
+
+  @Override
+  public void initialize(BatchSequence annotation, GeneratorCreationContext context) {
+    this.annotation = annotation;
+    this.context = context;
   }
 
   @Override
