@@ -53,13 +53,23 @@ public class BatchSequenceGeneratorIntegrationTests {
     parameters.add(Arguments.of(HsqlConfiguration.class, "hsql-batched"));
     parameters.add(Arguments.of(H2Configuration.class, "h2-default"));
     parameters.add(Arguments.of(H2Configuration.class, "h2-batched"));
-    parameters.add(Arguments.of(SqlServerConfiguration.class, "sqlserver-default"));
-    parameters.add(Arguments.of(SqlServerConfiguration.class, "sqlserver-batched"));
-    parameters.add(Arguments.of(PostgresConfiguration.class, "postgres-default"));
-    parameters.add(Arguments.of(PostgresConfiguration.class, "postgres-batched"));
-    parameters.add(Arguments.of(OracleConfiguration.class, "oracle-default"));
-    parameters.add(Arguments.of(OracleConfiguration.class, "oracle-batched"));
+    if (hasDocker()) {
+      parameters.add(Arguments.of(SqlServerConfiguration.class, "sqlserver-default"));
+      parameters.add(Arguments.of(SqlServerConfiguration.class, "sqlserver-batched"));
+      parameters.add(Arguments.of(PostgresConfiguration.class, "postgres-default"));
+      parameters.add(Arguments.of(PostgresConfiguration.class, "postgres-batched"));
+      parameters.add(Arguments.of(OracleConfiguration.class, "oracle-default"));
+      parameters.add(Arguments.of(OracleConfiguration.class, "oracle-batched"));
+    }
     return parameters;
+  }
+  
+  private static boolean hasDocker() {
+    return !isGitHubActions();
+  }
+
+  private static boolean isGitHubActions() {
+    return System.getenv().getOrDefault("GITHUB_ACTIONS", "false").equals("true");
   }
 
   private void setUp(Class<?> dataSourceConfiguration, String persistenceUnitName) {
