@@ -5,4 +5,4 @@ docker run --name jdbc-postgres \
  -e 'POSTGRES_PASSWORD=Cent-Quick-Space-Bath-8' \
  -e POSTGRES_USER=$USER \
  -p 5432:5432 \
- -d postgres:18.4-alpine
+ -d postgres:18.6-alpine

@@ -10,4 +10,4 @@ docker run --name jdbc-mariadb \
  -e 'MYSQL_DATABASE=jdbc' \
  -p 3307:3306 \
  -v ${DIRECTORY}/mariadb:/docker-entrypoint-initdb.d \
- -d mariadb:12.2.2-ubi10
+ -d mariadb:12.3.3-ubi10

@@ -1,6 +1,5 @@
 package com.github.marschall.hibernate.batchsequencegenerator;
 
-import static org.hibernate.id.IdentifierGeneratorHelper.getNamingStrategy;
 import static org.hibernate.internal.util.StringHelper.isNotEmpty;
 
 import java.io.Serializable;
