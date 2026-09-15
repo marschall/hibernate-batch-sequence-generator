@@ -2,6 +2,7 @@
 DIRECTORY=`dirname $0`
 DIRECTORY=$(realpath $DIRECTORY)
 # --mount type=tmpfs,destination=/var/lib/mysql \
+# mariadbd --lower_case_table_names=1
 
 docker run --name jdbc-mariadb \
  -e 'MYSQL_ROOT_PASSWORD=Cent-Quick-Space-Bath-8' \
@@ -10,4 +11,5 @@ docker run --name jdbc-mariadb \
  -e 'MYSQL_DATABASE=jdbc' \
  -p 3307:3306 \
  -v ${DIRECTORY}/mariadb:/docker-entrypoint-initdb.d \
- -d mariadb:12.3.3-ubi10
+ -d mariadb:12.3.3-ubi10 \
+ --lower_case_table_names=1
