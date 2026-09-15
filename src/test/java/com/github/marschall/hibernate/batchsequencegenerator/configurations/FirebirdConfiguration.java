@@ -25,7 +25,7 @@ public class FirebirdConfiguration {
     dataSource.setSuppressClose(true);
     // https://www.firebirdsql.org/file/documentation/drivers_documentation/java/faq.html#jdbc-urls-java.sql.drivermanager
     // https://github.com/FirebirdSQL/jaybird/wiki/Jaybird-and-Firebird-3
-    dataSource.setUrl("jdbc:firebirdsql://localhost:3050/jdbc?charSet=utf-8");
+    dataSource.setUrl("jdbc:firebirdsql://localhost:3050//var/lib/firebird/data/jdbc.fdb?charSet=utf-8");
     dataSource.setUsername("jdbc");
     dataSource.setPassword("Cent-Quick-Space-Bath-8");
     return dataSource;

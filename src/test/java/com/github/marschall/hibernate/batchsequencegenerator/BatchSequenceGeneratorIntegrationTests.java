@@ -22,6 +22,7 @@ import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.springframework.transaction.support.TransactionTemplate;
 
+import com.github.marschall.hibernate.batchsequencegenerator.configurations.FirebirdConfiguration;
 import com.github.marschall.hibernate.batchsequencegenerator.configurations.H2Configuration;
 import com.github.marschall.hibernate.batchsequencegenerator.configurations.HibernateConfiguration;
 import com.github.marschall.hibernate.batchsequencegenerator.configurations.HsqlConfiguration;
@@ -46,13 +47,13 @@ public class BatchSequenceGeneratorIntegrationTests {
 
 //    parameters.add(Arguments.of(Db2Configuration.class, "db2-default"));
 //    parameters.add(Arguments.of(Db2Configuration.class, "db2-batched"));
-//    parameters.add(Arguments.of(FirebirdConfiguration.class, "firebird-default"));
-//    parameters.add(Arguments.of(FirebirdConfiguration.class, "firebird-batched"));
     parameters.add(Arguments.of(HsqlConfiguration.class, "hsql-default"));
     parameters.add(Arguments.of(HsqlConfiguration.class, "hsql-batched"));
     parameters.add(Arguments.of(H2Configuration.class, "h2-default"));
     parameters.add(Arguments.of(H2Configuration.class, "h2-batched"));
     if (hasDocker()) {
+      parameters.add(Arguments.of(FirebirdConfiguration.class, "firebird-default"));
+      parameters.add(Arguments.of(FirebirdConfiguration.class, "firebird-batched"));
       parameters.add(Arguments.of(MariaDbConfiguration.class, "maria-default"));
       parameters.add(Arguments.of(MariaDbConfiguration.class, "maria-batched"));
       parameters.add(Arguments.of(SqlServerConfiguration.class, "sqlserver-default"));
