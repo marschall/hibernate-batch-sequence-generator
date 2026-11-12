@@ -1,5 +1,6 @@
 package com.github.marschall.hibernate.batchsequencegenerator;
 
+import static org.hibernate.ScrollMode.FORWARD_ONLY;
 import static org.hibernate.internal.util.StringHelper.isNotEmpty;
 
 import java.io.Serializable;
@@ -420,7 +421,7 @@ public final class BatchSequenceGenerator implements BulkInsertionCapableIdentif
           throws HibernateException {
     JdbcCoordinator coordinator = session.getJdbcCoordinator();
     List<Serializable> identifiers = new ArrayList<>(this.fetchSize);
-    PreparedStatement statement = coordinator.getStatementPreparer().prepareStatement(this.select);
+    PreparedStatement statement = coordinator.getStatementPreparer().prepareQueryStatement(this.select, false, FORWARD_ONLY);
     ResourceRegistry registry = coordinator.getLogicalConnection().getResourceRegistry();
     try {
       statement.setFetchSize(this.fetchSize);
