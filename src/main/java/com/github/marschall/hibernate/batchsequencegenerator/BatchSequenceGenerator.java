@@ -235,19 +235,21 @@ public final class BatchSequenceGenerator implements BulkInsertionCapableIdentif
     this.annotation = annotation;
     this.context = context;
   }
-
+  
   @Override
-  public void configure(Type type, Properties params, ServiceRegistry serviceRegistry) {
+  public void configure(GeneratorCreationContext creationContext, Properties parameters) {
     Class<?> identifierType;
     String contributor;
+    Type type = creationContext.getType();
+    ServiceRegistry serviceRegistry = creationContext.getServiceRegistry();
     if (this.annotation == null) {
       // GenericGenerator is used, default constructor was called
-      this.sequenceName = determineSequenceName(params, serviceRegistry);
-      this.fetchSize = determineFetchSize(params);
+      this.sequenceName = determineSequenceName(parameters, serviceRegistry);
+      this.fetchSize = determineFetchSize(parameters);
       identifierType = type.getReturnedClass();
-      contributor = this.determineContributor(params);
+      contributor = this.determineContributor(parameters);
     } else {
-      this.sequenceName = determineSequenceName(annotation, params, serviceRegistry);
+      this.sequenceName = determineSequenceName(annotation, parameters, serviceRegistry);
       this.fetchSize = annotation.fetchSize();
 
       identifierType = getType(context);
@@ -260,8 +262,12 @@ public final class BatchSequenceGenerator implements BulkInsertionCapableIdentif
   @Override
   public void initialize(SqlStringGenerationContext context) {
     this.identifierPool = IdentifierPool.empty();
-    this.databaseStructure.initialize(context);
     this.select = buildSelect(context, sequenceName);
+  }
+
+  @Override
+  public void registerExportables(Database database) {
+    this.databaseStructure.registerExportables(database);
   }
 
   private static String buildSelect(SqlStringGenerationContext context, QualifiedName sequenceName) {
@@ -410,11 +416,6 @@ public final class BatchSequenceGenerator implements BulkInsertionCapableIdentif
 
   private String getSequenceName() {
     return this.databaseStructure.getPhysicalName().render();
-  }
-
-  @Override
-  public void registerExportables(Database database) {
-    this.databaseStructure.registerExportables(database);
   }
 
   private IdentifierPool replenishIdentifierPool(SharedSessionContractImplementor session)

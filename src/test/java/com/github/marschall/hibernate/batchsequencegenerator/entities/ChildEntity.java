@@ -17,13 +17,12 @@ public class ChildEntity {
 
   @Id
   @GenericGenerator(
-          name = "child_id_generator",
           type = BatchSequenceGenerator.class,
           parameters = {
               @Parameter(name = SEQUENCE_PARAM, value = "SEQ_CHILD_ID"),
               @Parameter(name = FETCH_SIZE_PARAM, value = "50")
           })
-  @GeneratedValue(generator = "child_id_generator")
+  @GeneratedValue
   private Long childId;
 
   private Long parentId;

@@ -4,7 +4,7 @@
 
   <groupId>com.github.marschall</groupId>
   <artifactId>hibernate-batch-sequence-generator</artifactId>
-  <version>3.2.2-SNAPSHOT</version>
+  <version>4.0.0-SNAPSHOT</version>
   <inceptionYear>2017</inceptionYear>
   <url>https://github.com/marschall/hibernate-batch-sequence-generator</url>
   <name>Hibernate Batch Sequence Generator</name>
@@ -233,8 +233,8 @@
     <dependencies>
       <dependency>
         <groupId>org.hibernate.orm</groupId>
-        <artifactId>hibernate-platform</artifactId>
-        <version>7.4.15.Final</version>
+        <artifactId>hibernate-bom</artifactId>
+        <version>8.0.0.CR1</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>

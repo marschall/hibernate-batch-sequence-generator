@@ -6,10 +6,9 @@
 
   <persistence-unit name="db2-default">
     <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
-
     <class>com.github.marschall.hibernate.batchsequencegenerator.entities.ParentEntity</class>
     <class>com.github.marschall.hibernate.batchsequencegenerator.entities.ChildEntity</class>
-
+    <exclude-unlisted-classes>true</exclude-unlisted-classes>
   </persistence-unit>
 
   <persistence-unit name="db2-batched">
@@ -17,6 +16,7 @@
 
     <class>com.github.marschall.hibernate.batchsequencegenerator.entities.ParentEntity</class>
     <class>com.github.marschall.hibernate.batchsequencegenerator.entities.ChildEntity</class>
+    <exclude-unlisted-classes>true</exclude-unlisted-classes>
 
     <properties>
       <property name="hibernate.jdbc.batch_size" value="50" />
@@ -31,6 +31,7 @@
 
     <class>com.github.marschall.hibernate.batchsequencegenerator.entities.ParentEntity</class>
     <class>com.github.marschall.hibernate.batchsequencegenerator.entities.ChildEntity</class>
+    <exclude-unlisted-classes>true</exclude-unlisted-classes>
 
   </persistence-unit>
 
@@ -39,6 +40,7 @@
 
     <class>com.github.marschall.hibernate.batchsequencegenerator.entities.ParentEntity</class>
     <class>com.github.marschall.hibernate.batchsequencegenerator.entities.ChildEntity</class>
+    <exclude-unlisted-classes>true</exclude-unlisted-classes>
 
     <properties>
       <property name="hibernate.jdbc.batch_size" value="50" />
@@ -53,6 +55,7 @@
 
     <class>com.github.marschall.hibernate.batchsequencegenerator.entities.ParentEntity</class>
     <class>com.github.marschall.hibernate.batchsequencegenerator.entities.ChildEntity</class>
+    <exclude-unlisted-classes>true</exclude-unlisted-classes>
 
   </persistence-unit>
 
@@ -61,6 +64,7 @@
 
     <class>com.github.marschall.hibernate.batchsequencegenerator.entities.ParentEntity</class>
     <class>com.github.marschall.hibernate.batchsequencegenerator.entities.ChildEntity</class>
+    <exclude-unlisted-classes>true</exclude-unlisted-classes>
 
     <properties>
       <property name="hibernate.jdbc.batch_size" value="50" />
@@ -75,6 +79,7 @@
 
     <class>com.github.marschall.hibernate.batchsequencegenerator.entities.ParentEntity</class>
     <class>com.github.marschall.hibernate.batchsequencegenerator.entities.ChildEntity</class>
+    <exclude-unlisted-classes>true</exclude-unlisted-classes>
 
   </persistence-unit>
 
@@ -83,6 +88,7 @@
 
     <class>com.github.marschall.hibernate.batchsequencegenerator.entities.ParentEntity</class>
     <class>com.github.marschall.hibernate.batchsequencegenerator.entities.ChildEntity</class>
+    <exclude-unlisted-classes>true</exclude-unlisted-classes>
 
     <properties>
       <property name="hibernate.jdbc.batch_size" value="50" />
@@ -97,6 +103,7 @@
 
     <class>com.github.marschall.hibernate.batchsequencegenerator.entities.ParentEntity</class>
     <class>com.github.marschall.hibernate.batchsequencegenerator.entities.ChildEntity</class>
+    <exclude-unlisted-classes>true</exclude-unlisted-classes>
 
   </persistence-unit>
 
@@ -105,6 +112,7 @@
 
     <class>com.github.marschall.hibernate.batchsequencegenerator.entities.ParentEntity</class>
     <class>com.github.marschall.hibernate.batchsequencegenerator.entities.ChildEntity</class>
+    <exclude-unlisted-classes>true</exclude-unlisted-classes>
 
     <properties>
       <property name="hibernate.jdbc.batch_size" value="50" />
@@ -119,6 +127,7 @@
 
     <class>com.github.marschall.hibernate.batchsequencegenerator.entities.ParentEntity</class>
     <class>com.github.marschall.hibernate.batchsequencegenerator.entities.ChildEntity</class>
+    <exclude-unlisted-classes>true</exclude-unlisted-classes>
 
     <properties>
       <property name="hibernate.dialect" value="org.hibernate.community.dialect.FirebirdDialect" />
@@ -130,6 +139,7 @@
 
     <class>com.github.marschall.hibernate.batchsequencegenerator.entities.ParentEntity</class>
     <class>com.github.marschall.hibernate.batchsequencegenerator.entities.ChildEntity</class>
+    <exclude-unlisted-classes>true</exclude-unlisted-classes>
 
     <properties>
       <property name="hibernate.jdbc.batch_size" value="50" />
@@ -145,6 +155,7 @@
 
     <class>com.github.marschall.hibernate.batchsequencegenerator.entities.ParentEntity</class>
     <class>com.github.marschall.hibernate.batchsequencegenerator.entities.ChildEntity</class>
+    <exclude-unlisted-classes>true</exclude-unlisted-classes>
 
   </persistence-unit>
 
@@ -153,6 +164,7 @@
 
     <class>com.github.marschall.hibernate.batchsequencegenerator.entities.ParentEntity</class>
     <class>com.github.marschall.hibernate.batchsequencegenerator.entities.ChildEntity</class>
+    <exclude-unlisted-classes>true</exclude-unlisted-classes>
 
     <properties>
       <property name="hibernate.jdbc.batch_size" value="50" />
@@ -167,6 +179,7 @@
 
     <class>com.github.marschall.hibernate.batchsequencegenerator.entities.ParentEntity</class>
     <class>com.github.marschall.hibernate.batchsequencegenerator.entities.ChildEntity</class>
+    <exclude-unlisted-classes>true</exclude-unlisted-classes>
 
   </persistence-unit>
 
@@ -175,6 +188,7 @@
 
     <class>com.github.marschall.hibernate.batchsequencegenerator.entities.ParentEntity</class>
     <class>com.github.marschall.hibernate.batchsequencegenerator.entities.ChildEntity</class>
+    <exclude-unlisted-classes>true</exclude-unlisted-classes>
 
     <properties>
       <property name="hibernate.jdbc.batch_size" value="50" />
